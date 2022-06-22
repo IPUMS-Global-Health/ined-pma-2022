@@ -1,0 +1,959 @@
+---
+title: |
+  <h2 style='font-size: 75px'>
+  Data Analysis Workshop
+  </h2>
+  <div style='margin-bottom: 50px; font-size: 40px'>
+  Linking health survey data with climate datasets in R
+  </div>
+author: 
+  - |
+    <p style='font-size: 25px; margin-left: 50px'>
+      <img src='images/matt.png' width='100' style='vertical-align: middle'>
+      Matt Gunther - Senior Data Analyst 
+    </p>
+  - |
+    <p style='font-size: 25px; margin-left: 50px'>
+      <img src='images/devon.png' width='100' style='vertical-align: middle'> 
+      Devon Kristiansen - Project Manager
+    </p>
+    
+format: 
+  revealjs: 
+    theme: [default, custom.scss]
+    logo: images/logo-navy.png
+    chalkboard: true
+    smaller: true
+    scrollable: false
+---
+
+## Data and Research Question {.center}
+
+:::: {.columns}
+
+
+::: {.column width="60%"}
+::: {.incremental}
+
+::: {.fragment .fade-in-then-semi-out}
+IPUMS PMA: Fertility outcomes for women in Burkina Faso 
+:::
+::: {.fragment .fade-in-then-semi-out}
+GPS coordinates for each PMA sample cluster
+:::
+::: {.fragment .fade-in-then-semi-out}
+CHIRPS: Cumulative seasonal rainfall accumulation for each PMA sample cluster 
+:::
+::: {.fragment .fade-in}
+<p style='color: #98579B'>
+Do rainfall conditions influence women's short-term family planning decisions?
+</p>
+:::
+
+:::
+:::
+
+::: {.column width="40%"}
+![](images/goals.png){.absolute height=400}
+:::
+
+:::: 
+
+
+
+
+## Setup {.center}
+
+```{r}
+knitr::opts_chunk$set(echo = TRUE)
+library(kableExtra)
+```
+
+1. Follow [these steps]() to obtain today's code & publicly available data
+2. Copy the following code chunks into R to load required packages (click the clipboard icon inside each chunk to "copy all")
+
+:::: {.columns}
+::: {.column width="48%"}
+```{r}
+# IPUMS & Spatial Data Tools
+library(tidyverse)
+library(ipumsr) 
+library(sf)
+library(terra)
+library(ggspatial)
+```
+::: 
+::: {.column width="4%"}
+:::
+::: {.column width="48%"}
+```{r}
+# Analysis Tools 
+library(srvyr)
+library(survey)
+library(lme4)
+library(broom)
+library(broom.mixed)
+```
+::: 
+::::
+
+![](images/hex/tidyverse.png){.absolute left=0  height="200"}
+![](images/hex/ipumsr.png){.absolute left=300  height="200"}
+![](images/hex/sf.png){.absolute left=600  height="200"}
+![](images/hex/terra.png){.absolute left=900  height="200"}
+
+
+
+
+# 1 - IPUMS PMA Data 
+
+
+
+
+## Downloading IPUMS PMA data
+
+::: {style="text-align: center; margin-top: 1em"}
+![](images/pma/home.png){height="500"}
+
+[Download a data extract from IPUMS PMA ](https://pma.ipums.org/pma/){preview-link="true" style="text-align: center"}
+:::
+
+
+
+
+## Load IPUMS PMA data into R
+
+::: {.incremental}
+::: {.fragment}
+```{r, results='hide'}
+pma <- read_ipums_micro(
+  ddi = "local/data/pma_00136.xml", # Use your own file name here 
+  data = "local/data/pma_00136.dat.gz" # Use your own file name here 
+)
+```
+:::
+::: {.fragment}
+```{r, echo = FALSE}
+pma
+```
+:::
+:::
+
+
+
+## Data format 
+
+::: {.incremental}
+::: {.fragment}
+```{r, eval=F}
+pma %>% count(RESULTFQ_1, RESULTFQ_2)
+```
+:::
+::: {.fragment}
+```{r, echo=F}
+pma %>% count(RESULTFQ_1, RESULTFQ_2)
+```
+:::
+::: {.fragment}
+```{r}
+# Keep only panel members from both phases 
+pma <- pma %>% filter(RESULTFQ_1 == 1 & RESULTFQ_2 == 1)
+```
+:::
+:::
+
+
+
+
+
+# 2- GPS data 
+
+
+
+
+## About PMA GPS data {auto-animate="true"}
+
+:::: {.columns}
+::: {.column width="60%"}
+::: {.incremental}
+::: {.fragment .fade-in-then-semi-out}
+PMA uses a multi-stage **cluster sample** design. 
+:::
+::: {.fragment .fade-in-then-semi-out}
+At the beginning of the panel study, 35 households were randomly selected within each cluster or "enumeration area" (EA).
+:::
+:::
+:::
+::: {.column width="40%"}
+:::
+
+:::: 
+
+## About PMA GPS data {auto-animate="true"}
+
+:::: {.columns}
+::: {.column width="60%"}
+
+<div style="opacity:0.5">
+PMA uses a multi-stage **cluster sample** design. 
+
+At the beginning of the panel study, 35 households were randomly selected within each cluster or "enumeration area" (EA).
+</div>
+
+::: {.incremental}
+::: {.fragment .fade-in-then-semi-out}
+IPUMS PMA does not disseminate the GPS coordinates for EAs, but you may [apply here]() for access directly from PMA.
+:::
+::: {.fragment .fade-in-then-semi-out}
+Today, we'll be using **falsified** GPS coordinates as an example. 
+:::
+
+:::
+:::
+
+::: {.column width="40%"}
+![](images/pma/gps1.png){.absolute top=100 right=50 height=300}
+:::
+
+:::: 
+
+## About PMA GPS data {auto-animate="true"}
+
+:::: {.columns}
+
+::: {.column width="60%"}
+<div style="opacity:0.5">
+PMA uses a multi-stage **cluster sample** design. 
+
+At the beginning of the panel study, 35 households were randomly selected within each cluster or "enumeration area" (EA).
+
+IPUMS PMA does not disseminate the GPS coordinates for EAs, but you may [apply here]() for access directly from PMA.
+</div>
+
+Today, we'll be using **falsified** GPS coordinates as an example. 
+:::
+
+::: {.column width="40%"}
+![](images/pma/gps1.png){.absolute top=300 right=0 height=300}
+:::
+
+:::: 
+
+## About PMA GPS data {auto-animate="true"}
+
+:::: {.columns}
+::: {.column width="60%"}
+<div style="opacity:0.5">
+PMA uses a multi-stage **cluster sample** design. 
+
+At the beginning of the panel study, 35 households were randomly selected within each cluster or "enumeration area" (EA).
+
+IPUMS PMA does not disseminate the GPS coordinates for EAs, but you may [apply here]() for access directly from PMA.
+
+Today, we'll be using **falsified** GPS coordinates as an example. 
+</div>
+
+The coordinates represent the <span style="color:red">**centroid**</span> of an enumeration area, *not* the location of any sampled household. 
+:::
+::: {.column width="40%"}
+![](images/pma/gps2.png){.absolute top=300 right=0 height=300}
+:::
+:::: 
+
+
+
+
+## Load PMA GPS data into R 
+
+::: {.incremental}
+::: {.fragment}
+A PMA GPS dataset is a simple CSV file with one row per EA, and columns containing latitude and longitude points.
+
+```{r}
+gps <- read_csv("data/pma_gps.csv")
+```
+::: 
+::: {.fragment}
+```{r, echo = FALSE}
+gps 
+```
+:::
+::: {.fragment}
+The column `DATUM` describes the coordinate reference system: World Geodetic System 1984.
+:::
+:::
+
+
+
+
+## GPS data as a Simple Features Object
+
+:::: {.columns}
+::: {.column width="75%"}
+The [sf](https://r-spatial.github.io/sf/index.html) ("simple features") package for R contains many of the same tools you would find in other GIS software
+
+```{r, `code-line-numbers` = "1,2,5"}
+gps <- gps %>% 
+  st_as_sf(
+    coords = c("GPSLONG", "GPSLAT"), 
+    crs = 4326
+  ) 
+```
+:::
+::: {.column width="15%"}
+![](images/hex/sf.png){.absolute right=0  top=90 height="200"}
+:::
+::::
+
+## GPS data as a Simple Features Object {auto-animate="true"}
+
+:::: {.columns}
+::: {.column width="75%"}
+::: {.incremental}
+The [sf](https://r-spatial.github.io/sf/index.html) ("simple features") package for R contains many of the same tools you would find in other GIS software
+
+```{r, `code-line-numbers` = "3-4"}
+gps <- gps %>% 
+  st_as_sf(
+    coords = c("GPSLONG", "GPSLAT"), 
+    crs = 4326
+  ) 
+```
+::: {.fragment}
+`4326` is the [EPSG](https://epsg.io/4326) code for World Geodetic System 1984.
+:::
+::: {.fragment}
+```{r, echo = FALSE}
+gps 
+```
+:::
+:::
+:::
+::: {.column width="15%"}
+![](images/hex/sf.png){.absolute right=0  top=90 height="200"}
+:::
+::::
+
+
+
+
+# 3 - Mapping Birth Outcomes
+
+
+
+
+## Birth outcomes for individuals
+
+::: {.incremental}
+
+::: {.fragment .fade-in-then-semi-out}
+The variable [PANELBIRTH_2]() indicates whether each woman gave birth within the year that passed between Phase 1 and Phase 2 of the panel study.
+:::
+
+::: {.fragment .fade-in}
+```{r}
+pma %>% count(PANELBIRTH_2)
+```
+:::
+
+::: {.fragment .fade-in-then-semi-out}
+**Important:** Code `99` represents women who were "not in universe" because they had indicated elsewhere on the survey that they had never given birth. 
+:::
+
+::: {.fragment .fade-in-then-semi-out}
+<p style='color: #98579B'>We can treat these cases as "No".</p>
+:::
+
+::: {.fragment .fade-in}
+```{r}
+pma %>% count(PANELBIRTH_2 == 1)
+```
+:::
+
+:::
+
+
+
+
+## Birth outcomes by EA {auto-animate=true}
+
+::: {.incremental}
+::: {.fragment .fade-in}
+Where are the enumeration areas with the largest proportion of women who gave birth?
+:::
+::: {.fragment .fade-in}
+```{r}
+ea_summary <- pma %>% 
+  as_survey_design(weight = PANELWEIGHT) %>% 
+  group_by(ea = EAID_1, urban = URBAN == 1) %>% 
+  summarise(birth_prop = survey_mean(PANELBIRTH_2 == 1, vartype = NULL)) %>% 
+  ungroup()
+```
+:::
+::: {.fragment .fade-in}
+```{r, echo=FALSE}
+ea_summary 
+```
+:::
+:::
+
+## Birth outcomes by EA {auto-animate=true}
+
+Where are the enumeration areas with the largest proportion of women who gave birth?
+
+```{r, `code-line-numbers` = "6-8"}
+ea_summary <- pma %>% 
+  as_survey_design(weight = PANELWEIGHT) %>% 
+  group_by(ea = EAID_1, urban = URBAN == 1) %>% 
+  summarise(birth_prop = survey_mean(PANELBIRTH_2 == 1, vartype = NULL)) %>% 
+  ungroup() %>% 
+  mutate(
+    ntile = ntile(birth_prop, 2)
+  )
+```
+
+```{r, echo=FALSE}
+ea_summary 
+```
+
+## Birth outcomes by EA {auto-animate=true}
+
+Where are the enumeration areas with the largest proportion of women who gave birth?
+
+```{r,  `code-line-numbers` = "8"}
+ea_summary <- pma %>% 
+  as_survey_design(weight = PANELWEIGHT) %>% 
+  group_by(ea = EAID_1, urban = URBAN == 1) %>% 
+  summarise(birth_prop = survey_mean(PANELBIRTH_2 == 1, vartype = NULL)) %>% 
+  ungroup() %>% 
+  mutate(
+    ntile = ntile(birth_prop, 2),
+    many_births = ntile == 2
+  )
+```
+
+```{r, echo=FALSE}
+ea_summary 
+```
+
+
+
+
+## Merging GPS data 
+
+::: {.incremental}
+Use `full_join` to merge all rows of `ea_summary` to `gps`. 
+
+If you list `gps` *first*, the result will be another Simple Features object.
+
+```{r}
+ea_summary_gps <- full_join(gps %>% select(ea = EAID), ea_summary, by = "ea")
+```
+::: {.fragment}
+```{r, echo = FALSE}
+ea_summary_gps
+```
+:::
+:::
+
+
+
+
+## Mapping births by EA
+
+```{r, fig.align='center'}
+ggplot() + 
+  layer_spatial(ea_summary_gps, aes(shape = many_births, color = many_births)) + 
+  theme_minimal()
+```
+
+
+
+
+## Adding a Shapefile
+
+You only need to specify the folder: R will locate the appropriate file.
+
+```{r, results='hide'}
+shape <- st_read("data/geobf") %>% select(ADMIN_NAME)
+```
+
+```{r, echo=FALSE}
+shape
+```
+
+
+
+
+## Mapping births by EA {auto-animate=true}
+
+```{r, fig.align='center'}
+ggplot() + 
+  layer_spatial(ea_summary_gps, aes(shape = many_births, color = many_births)) + 
+  theme_minimal()
+```
+
+## Mapping births by EA {auto-animate=true}
+
+```{r, fig.align='center', `code-line-numbers` = "3"}
+ggplot() + 
+  layer_spatial(ea_summary_gps, aes(shape = many_births, color = many_births)) + 
+  layer_spatial(shape, alpha = 0) + # `alpha` controls transparency 
+  theme_minimal()
+```
+
+
+
+
+
+
+# 4 - CHIRPS: Annual rainfall summary 
+
+
+
+
+## Downloading CHIRPS data
+
+::: {style="text-align: center; margin-top: 1em"}
+![](images/chirps/home.png){height="500"}
+
+[Download a CHRIPS data extract from ClimateSERV](https://climateserv.servirglobal.net/){
+  preview-link="true" style="text-align: center"
+}
+:::
+
+
+
+
+## What is a Raster File?
+
+:::: {.columns}
+
+::: {.column width="75%"}
+![](images/chirps/files.png){.border .border-thick}
+:::
+
+::: {.column width="25%"}
+::: {.incremental}
+::: {.fragment .fade-in-then-semi-out}
+When you open your download, you'll find *one file per day* in our selected space and time period. 
+:::
+::: {.fragment .fade-in-then-semi-out}
+The `.tif` file format is a high-resolution image. 
+:::
+::: {.fragment .fade-in-then-semi-out}
+For CHRIPS, each pixel represents mm rainfall in an area 0.05 degrees longitude by 0.05 degrees latitude. 
+:::
+:::
+:::
+
+:::: 
+
+
+
+
+## Load Raster Data into R
+
+::::: {.incremental}
+:::: {.columns}
+
+::: {.column width="75%"}
+The [terra]() package reads Raster files. 
+
+You *could* simply read the data from a single day, and map the result. 
+
+```{r}
+june5_2020 <- rast("data/chirps/20200605.tif")
+```
+
+```{r, echo=FALSE}
+june5_2020
+```
+:::
+
+::: {.column width="15%"}
+![](images/hex/terra.png){.absolute right=0 top=75 height=200}
+:::
+
+::::
+
+::: {.fragment}
+This output summaries the `.tif` file for June 5, 2020. Notice that there are:
+
+  * 115 rows of pixels 
+  * 159 columns of pixels
+  * 1 *layer* named `20211028`
+:::
+:::::
+
+
+
+
+## June 5, 2020 {auto-animate=true}
+
+```{r, fig.align='center', eval=FALSE}
+ggplot() + 
+  layer_spatial(june5_2020) + 
+  layer_spatial(shape, alpha = 0) + 
+  theme_minimal() 
+```
+
+## June 5, 2020 {auto-animate=true}
+
+```{r, fig.align='center'}
+ggplot() + 
+  layer_spatial(june5_2020) + 
+  layer_spatial(shape, alpha = 0) + 
+  theme_minimal() 
+```
+
+## June 5, 2020 {auto-animate=true}
+
+```{r, `code-line-numbers`="2", fig.align='center'}
+ggplot() + 
+  layer_spatial(mask(june5_2020, vect(shape), touches = FALSE)) + 
+  layer_spatial(shape, alpha = 0) + 
+  theme_minimal() 
+```
+
+## June 5, 2020 {auto-animate=true}
+
+```{r, `code-line-numbers`="5-7", fig.align='center'}
+ggplot() + 
+  layer_spatial(mask(june5_2020, vect(shape), touches = FALSE)) + 
+  layer_spatial(shape, alpha = 0) + 
+  theme_minimal() + 
+  scale_fill_gradient2(low = "transparent", high = "#4375B7", na.value = "transparent") + 
+  labs(fill = "Rainfall (mm)")
+```
+
+
+
+
+## Aggregation {auto-animate=true}
+
+::: {.incremental}
+::: {.fragment}
+Ultimately, you'll want to work with `.tif` images from *many* days at the same time. 
+:::
+::: {.fragment}
+We'll exploit patterns in the name of each file to load all days from each year that fall within the Burkina Faso "rainy season" (June 1 - October 1). 
+:::
+::: {.fragment}
+```{r}
+years <- map(1981:2020, ~{
+  yr <- .x
+})
+
+years <- set_names(years, 1981:2020) 
+```
+:::
+::: {.fragment}
+```{r, echo = FALSE}
+years
+```
+:::
+:::
+
+## Aggregation {auto-animate=true}
+
+::: {.incremental}
+Ultimately, you'll want to work with `.tif` images from *many* days at the same time. 
+
+We'll exploit patterns in the name of each file to load all days from each year that fall within the Burkina Faso "rainy season" (June 1 - October 1). 
+
+```{r, `code-line-numbers`="3-10"}
+years <- map(1981:2020, ~{
+  yr <- .x
+  months <- map(6:9, ~{
+      list.files(
+        "data/chirps",
+        full.names = TRUE,
+        pattern = paste0(yr, "0", .x, ".*tif")
+      ) 
+    })
+  unlist(months) 
+})
+
+years <- set_names(years, 1981:2020) 
+```
+
+::: {.fragment}
+```{r, echo = FALSE}
+years
+```
+:::
+:::
+
+
+
+
+## Raster Layers 
+
+::: {.incremental}
+::: {.fragment}
+We now create one **multi-layered** raster for each year, and store all years in one large list. 
+
+```{r}
+years <- years %>% map(~.x %>% rast)
+```
+:::
+::: {.fragment}
+For example, each of the 122 days from the `2020` rainy season are now layered together in a single raster. 
+:::
+::: {.fragment}
+```{r}
+years$`2020`
+```
+:::
+:::
+
+
+## Seasonal Rainfall Accumulation
+
+
+::: {.incremental}
+::: {.fragment}
+We could now use `sum` to add all of the daily rainfall totals from the `2020` rainy season. This reduces the number of layers from 122 to 1.
+:::
+::: {.fragment}
+```{r}
+years$`2020` %>% sum()
+```
+:::
+::: {.fragment}
+More efficiently, we'll apply the same `sum` function to *every* year in our list. Let's call this output `chirps_seasonal_sum`.
+:::
+::: {.fragment}
+```{r}
+chirps_seasonal_sum <- map(years, ~.x %>% sum)
+
+chirps_seasonal_sum
+```
+:::
+:::
+
+
+
+
+## One Layer per Year 
+
+::: {.incremental}
+::: {.fragment}
+Now that each year in our list contains only one layer each, we can generate a *new* multi-layered raster: one layer *per year*. 
+:::
+::: {.fragment}
+```{r}
+chirps_seasonal_sum <- rast(chirps_seasonal_sum)
+```
+::: 
+:::{.fragment}
+```{r, echo = FALSE}
+chirps_seasonal_sum
+```
+:::
+:::{.fragment}
+For every 0.05 degrees lat by 0.05 degree lon, we now have the **total seasonal rainfall accumulation** for every year 1981-2020.
+:::
+:::
+
+
+
+
+## How rainy was 2020? {auto-animate=true}
+::: {.incremental}
+:::{.fragment}
+To answer this question, we'll compare total seasonal accumulation in 2020 to the 40-year average.
+:::
+:::{.fragment}
+Here is the *average* seasonal rainfall accumulation for each pixel (across all years):
+
+```{r}
+chrips_avg <- mean(chirps_seasonal_sum)
+```
+:::
+:::{.fragment}
+And here is the *standard deviation* from that average: 
+
+```{r}
+chirps_sd <- stdev(chirps_seasonal_sum)
+```
+:::
+:::{.fragment}
+Finally we can use both to compute a Z-score for each pixel in each year. 
+
+```{r}
+chirps_z <- (chirps_seasonal_sum - chrips_avg) / chirps_sd
+```
+:::
+:::{.fragment}
+```{r, echo=FALSE}
+chirps_z
+```
+:::
+:::
+
+
+
+
+## 2020 Seasonal Rainfall Accumulation 
+Total accumulation relative to local 40-year average
+
+```{r, fig.align='center'}
+ggplot() + 
+  layer_spatial(mask(chirps_z$`2020`, vect(shape), touches = FALSE)) + 
+  layer_spatial(shape, alpha = 0) +
+  theme_minimal() + 
+  scale_fill_gradient2(low = "#D72B22", high = "#4375B7", na.value = "transparent") + 
+  labs(fill = "Z-score (1981-2020)")
+
+```
+
+
+
+
+# 5 - Bringing it All Together 
+
+```{r}
+knitr::opts_chunk$set(eval = FALSE)
+```
+
+
+
+## Precision: where do sample members live?
+
+::: {style="text-align: center; margin-top: 1em"}
+![](images/displacement.png){height="500"}
+:::
+
+
+
+
+## Buffers
+
+```{r, results='hide'}
+ea_summary_gps <- ea_summary_gps %>% st_transform(crs = 32630)
+shape <- shape %>% st_transform(crs = 32630)
+
+ea_summary_gps <- ea_summary_gps %>% 
+  st_buffer(if_else(.$urban, 2000, 5000)) %>% 
+  st_intersection(shape) %>% 
+  st_filter(ea_summary_gps)
+
+ea_summary_gps <- ea_summary_gps %>% st_transform(crs = 4326)
+shape <- shape %>% st_transform(crs = 4326)
+```
+
+
+
+
+## PMA Sample Cluster Locations
+
+```{r}
+# Buffer zones are drawn to scale, and do not overlap admin1 boundaries 
+ggplot() + 
+  layer_spatial(shape, alpha = 0) + 
+  layer_spatial(ea_summary_gps, aes(fill = many_births), color = 0) + 
+  theme_minimal()
+```
+
+
+
+
+## Assign each EA one Z-score
+
+```{r}
+# Example: there are 6 pixels for this EA
+ex <- ea_summary_gps %>% filter(ea == 854131014)
+
+ggplot() + 
+  layer_spatial(chirps_z20 %>% crop(ex, snap = "out")) + 
+  layer_spatial(ex, alpha = 0) + 
+  theme_minimal() + 
+  scale_fill_gradient2(
+    low = "#D72B22", # red 
+    high = "#4375B7", # blue
+    na.value = "transparent",
+    limits = c(-4, 4)
+  )
+
+# We'll take the average Z-score for these 6 pixels, but weight by area
+ex <- chirps_z$`2020` %>% extract(vect(ex), weights = TRUE)
+ex 
+ex %>% summarise(wtd_mean = weighted.mean(`2020`, weight))
+
+# Now, we do it with all EAs
+ea_summary_gps <- ea_summary_gps %>% rowid_to_column("ID")
+
+ea_summary_gps <- chirps_z20 %>% 
+  extract(vect(ea_summary_gps), weights = TRUE) %>% 
+  tibble() %>% 
+  group_by(ID) %>% 
+  summarise(Z = weighted.mean(`2020`, weight)) %>% 
+  full_join(ea_summary_gps, by = "ID") %>% 
+  select(-geometry)
+
+ea_summary_gps
+```
+
+
+
+
+# 6 - Analysis
+
+
+
+
+## Join individual PMA records together with Z-scores for each EA
+
+```{r}
+pma_chirps <- pma %>% 
+  transmute(
+    ea = EAID_1, 
+    wt = PANELWEIGHT,
+    birth = PANELBIRTH_2 == 1
+  ) %>% 
+  left_join(ea_summary_gps, by = "ea") 
+```
+
+
+
+
+## Binomial model with cluster-robust SEs
+
+```{r}
+# Weighted with cluster-robust SEs
+pma_chirps %>%
+  as_survey_design(weight = wt, id = ea) %>%
+  svyglm(birth ~ Z*urban, design = ., family = "quasibinomial") %>%
+  tidy(exp = TRUE, conf.int = TRUE) %>%
+  mutate(sig = gtools::stars.pval(p.value))
+```
+
+
+
+
+## Multilevel model with EA random effects 
+
+```{r}
+# Unweighted with EA random effects 
+glmer(
+  birth ~ Z*urban + (1 | ea), 
+  data = pma_chirps,
+  family = "binomial") %>%
+  tidy(exp = TRUE, conf.int = TRUE) %>%
+  mutate(sig = gtools::stars.pval(p.value))
+```
+
+
+```{r, echo=FALSE, eval=FALSE}
+# Weighted with EA random effects ??? Does not match Stata 
+pma_chirps2 <- parameters::rescale_weights(pma_chirps, "ea", "wt")
+glmer(
+  birth ~ Z*urban + (1 | ea), 
+  weights = pweights_a,
+  data = pma_chirps2,
+  family = "binomial") %>%
+  tidy(exp = TRUE, conf.int = TRUE) %>%
+  mutate(sig = gtools::stars.pval(p.value))
+```

@@ -4,3 +4,233 @@ output: html_document
 date: '2022-07-06'
 ---
 
+# Setup 
+
+## Packages 
+
+```{r}
+library(tidyverse)
+library(ipumsr)
+library(sf)
+library(terra)
+library(ggspatial)
+```
+
+## IPUMS PMA data 
+
+```{r}
+dat <- read_ipums_micro(
+  ddi = "local/data/pma_00136.xml",
+  data = "local/data/pma_00136.dat.gz"
+)
+
+# Keep only panel members from both phases 
+dat <- dat %>% filter(RESULTFQ_1 == 1 & RESULTFQ_2 == 1)
+```
+
+## GPS data 
+
+```{r}
+gps <- read_csv("local/data/gps_real.csv")
+
+# Set CRS: WGS 84
+gps <- gps %>% 
+  st_as_sf(
+    coords = c("GPSLONG", "GPSLAT"), 
+    crs = 4326
+  ) %>% 
+  select(ea = EA_ID)
+```
+
+## Shapefile 
+
+```{r}
+shape <- st_read("data/geobf") %>% select(ADMIN_NAME)
+```
+
+# EA summary 
+
+We define `many_births` as an EA where more than 13.5% of surveyed women gave birth during the panel observation period. This corresponds roughly with "more than the proportion of women in the median EA". 
+
+```{r}
+many_births_tbl <- dat %>%
+  mutate(
+    birth = PANELBIRTH_2 == 1,
+    urban = URBAN == 1,
+    ea = EAID_1
+  ) %>% 
+  group_by(ea, urban) %>% 
+  summarise(prop = mean(birth), .groups = "keep") %>% 
+  ungroup() %>% 
+  mutate(many_births = prop > median(prop))
+  
+
+many_births_tbl <- many_births_tbl %>%
+  right_join(gps, ., by = "ea")
+
+ggplot() + 
+  layer_spatial(shape, alpha = 0) + 
+  layer_spatial(many_births_tbl, aes(shape = many_births, color = many_births)) + 
+  theme_minimal()
+```
+
+# CHIRPS 
+
+## Buffers
+
+```{r}
+many_births_tbl <- many_births_tbl %>% st_transform(crs = 32630)
+shape <- shape %>% st_transform(crs = 32630)
+
+many_births_tbl <- many_births_tbl %>% 
+  st_buffer(if_else(.$urban, 2000, 5000)) %>% 
+  st_intersection(shape) %>% 
+  st_filter(many_births_tbl)
+
+many_births_tbl <- many_births_tbl %>% st_transform(crs = 4326)
+shape <- shape %>% st_transform(crs = 4326)
+
+# Buffer zones are drawn to scale, and do not overlap admin1 boundaries 
+ggplot() + 
+  layer_spatial(shape, alpha = 0) + 
+  layer_spatial(many_births_tbl, aes(fill = many_births), color = 0) + 
+  theme_minimal()
+```
+
+## Seasonal rainfall accumulation 
+
+```{r}
+# Get a raster for every day June 1 to Oct 1 in 1981-2020
+years <- map(1981:2020, ~{
+  yr <- .x
+  unlist(map(6:9, ~{
+      list.files(
+        "data/chirps",
+        full.names = TRUE,
+        pattern = paste0(yr, "0", .x, ".*tif")
+      ) 
+    })) 
+})
+years <- set_names(years, 1981:2020) %>% map(~{rast(.x)})
+
+# Calculate a sum of the rainfall for all days in each year's rainy season 
+chirps_seasonal_sum <- map(years, ~sum(.x))
+
+# Coerce this list into a raster with one "layer" per year 
+chirps_seasonal_sum <- rast(chirps_seasonal_sum)
+```
+
+## Z-scores
+
+```{r}
+# Mean seasonal rainfall accumulation 1981-2020
+chrips_avg <- mean(chirps_seasonal_sum)
+
+# SD seasonal rainfall accumulation 1981-2020
+chirps_sd <- stdev(chirps_seasonal_sum)
+
+# Z-score: how rainy was this season compared to the avg season in this place?
+chirps_z <- (chirps_seasonal_sum - chrips_avg) / chirps_sd
+
+# 2020 Z-score map: a bit rainier year than normal (except in the southwest)
+ggplot() + 
+  layer_spatial(mask(chirps_z$`2020`, vect(shape), touches = FALSE)) + 
+  layer_spatial(shape, alpha = 0) +
+  layer_spatial(many_births_tbl, alpha = 0) + 
+  theme_minimal() + 
+  scale_fill_gradient2(
+    low = "#D72B22", # red 
+    high = "#4375B7", # blue
+    na.value = "transparent",
+    limits = c(-4, 4)
+  )
+
+```
+
+## Spatially weighted Z-scores
+
+```{r}
+# Example: there are 6 pixels for this EA
+ex <- many_births_tbl %>% filter(ea == 854131014)
+
+ggplot() + 
+  layer_spatial(chirps_z$`2020` %>% crop(ex, snap = "out")) + 
+  layer_spatial(ex, alpha = 0) + 
+  theme_minimal() + 
+  scale_fill_gradient2(
+    low = "#D72B22", # red 
+    high = "#4375B7", # blue
+    na.value = "transparent",
+    limits = c(-4, 4)
+  )
+
+# We'll take the average Z-score for these 6 pixels, but weight by area
+ex <- chirps_z$`2020` %>% extract(vect(ex), weights = TRUE)
+ex 
+ex %>% summarise(wtd_mean = weighted.mean(`2020`, weight))
+
+# Now, we do it with all EAs
+many_births_tbl <- many_births_tbl %>% rowid_to_column("ID")
+
+many_births_tbl <- chirps_z$`2020` %>% 
+  extract(vect(many_births_tbl), weights = TRUE) %>% 
+  tibble() %>% 
+  group_by(ID) %>% 
+  summarise(Z = weighted.mean(`2020`, weight)) %>% 
+  full_join(many_births_tbl, by = "ID") %>% 
+  select(-geometry)
+```
+
+# Analysis 
+
+```{r}
+test <- many_births_tbl %>%
+  select(Z, EAID_1 = ea) %>%
+  full_join(dat, by = "EAID_1") %>%
+  mutate(
+    birth = PANELBIRTH_2 == 1,
+    urban = URBAN == 1,
+    ea = EAID_1,
+    fake = 1
+  )
+
+# Weighted with cluster-robust SEs
+library(srvyr)
+library(survey)
+library(broom)
+test %>%
+  as_survey_design(weight = PANELWEIGHT, id = ea) %>%
+  svyglm(birth ~ Z*urban, design = ., family = "quasibinomial") %>%
+  tidy(exp = TRUE, conf.int = TRUE) %>%
+  mutate(sig = gtools::stars.pval(p.value))
+
+# Unweighted with EA random effects (as if weight == 1 above)
+library(lme4)
+library(lmerTest)
+library(broom.mixed)
+library(sjstats)
+glmer(
+  birth ~ Z*urban + (1 | ea), 
+  data = test,
+  family = "binomial") %>%
+  tidy(exp = TRUE, conf.int = TRUE) %>%
+  mutate(sig = gtools::stars.pval(p.value))
+
+# Weighted with EA random effects ??? Does not match Stata 
+test2 <- parameters::rescale_weights(test, "ea", "PANELWEIGHT")
+glmer(
+  birth ~ Z*urban + (1 | ea), 
+  weights = pweights_a,
+  data = test2,
+  family = "binomial") %>%
+  tidy(exp = TRUE, conf.int = TRUE) %>%
+  mutate(sig = gtools::stars.pval(p.value))
+```
+
+```
+use test.dta
+melogit birth c.Z##urban || ea:, or
+melogit birth c.Z##urban  [pw = wt]  || ea:, or
+```
+
+

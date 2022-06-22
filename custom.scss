@@ -1,0 +1,19 @@
+@import url('https://assets.ipums.org/_css/font-faces.css'); 
+
+/*-- scss:defaults --*/
+
+$font-family-sans-serif: cabrito_sans_norm_regular;
+$presentation-heading-font: cabrito_sans_norm_regular;
+$presentation-heading-color:  #00263A;
+$presentation-heading-text-transform: uppercase;
+$presentation-heading-font-weight: 500;
+$link-color: #98579B;
+$presentation-title-slide-text-align: left;
+$code-block-font-size:	0.6em;
+$presentation-font-smaller: .8;
+
+/*-- scss:rules --*/
+
+.reveal .cell {
+  margin-bottom: 20px;
+}
