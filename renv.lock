@@ -644,14 +644,7 @@
     "ggspatial": {
       "Package": "ggspatial",
       "Version": "1.1.5.9000",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "ggspatial",
-      "RemoteUsername": "paleolimbot",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "a6783c6d2728a63305d7602849233df64877cfe4",
-      "Hash": "f0ddb76e26f92c3e7ef80c04cf5f2450",
+      "Source": "/renv/cellar/ggspatial_1.1.5.9000.tag.gz",
       "Requirements": [
         "abind",
         "ggplot2",
