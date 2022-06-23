@@ -6,7 +6,7 @@ Welcome! If you're looking for free registration for the in-person coding worksh
 
 All data and software (R) featured in this workshop are available free of charge.
 
-# 	:bangbang: Please Complete Setup Before the Workshop Begins :bangbang:
+# 	:bangbang: Please Complete Setup Before the Workshop Begins
 
 Setup: 
 
