@@ -9,7 +9,7 @@
 <link href="slides_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-0.9.592">
 
-  <title>quarto-input3df9a107</title>
+  <title>quarto-inputc1f8c801</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -402,7 +402,6 @@ Data Analysis Workshop
 <h2>Data and Research Question</h2>
 <div class="columns">
 <div class="column" style="width:60%;">
-<div>
 <div class="fragment fade-in-then-semi-out">
 <p>IPUMS PMA: Fertility outcomes for women in Burkina Faso</p>
 </div>
@@ -417,21 +416,18 @@ Data Analysis Workshop
 Do rainfall conditions influence women’s short-term family planning decisions?
 </p>
 </div>
-</div>
 </div><div class="column" style="width:40%;">
 <p><img data-src="images/goals.png" class="absolute" style="height: 400px; "></p>
 </div>
 </div>
 </section>
-<section id="setup" class="slide level2 center">
+<section id="setup" class="slide level2 nonincremental">
 <h2>Setup</h2>
 <div class="cell">
 
 </div>
-<ol type="1">
-<li>Follow <a href="">these steps</a> to obtain today’s code &amp; publicly available data</li>
-<li>Copy the following code chunks into R to load required packages (click the clipboard icon inside each chunk to “copy all”)</li>
-</ol>
+<p>Follow <a href="">these steps</a> to obtain today’s code &amp; publicly available data</p>
+<p>Copy the following code chunks into R to load required packages<br> (Hint: click the clipboard icon inside each chunk to “copy all”)</p>
 <div class="columns">
 <div class="column" style="width:48%;">
 <div class="cell">
@@ -466,12 +462,11 @@ Do rainfall conditions influence women’s short-term family planning decisions?
 <h2>Downloading IPUMS PMA data</h2>
 <div style="text-align: center; margin-top: 1em">
 <p><img data-src="images/pma/home.png" height="500"></p>
-<p><a href="https://pma.ipums.org/pma/" data-preview-link="true" style="text-align: center">Download a data extract from IPUMS PMA</a></p>
+<p><a href="https://pma.ipums.org/pma/">Download a data extract from IPUMS PMA</a></p>
 </div>
 </section>
 <section id="load-ipums-pma-data-into-r" class="slide level2">
 <h2>Load IPUMS PMA data into R</h2>
-<div>
 <div class="fragment">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>pma <span class="ot">&lt;-</span> <span class="fu">read_ipums_micro</span>(</span>
@@ -506,11 +501,9 @@ Do rainfall conditions influence women’s short-term family planning decisions?
 </div>
 </div>
 </div>
-</div>
 </section>
 <section id="data-format" class="slide level2">
 <h2>Data format</h2>
-<div>
 <div class="fragment">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>pma <span class="sc">%&gt;%</span> <span class="fu">count</span>(RESULTFQ_1, RESULTFQ_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -546,7 +539,6 @@ Do rainfall conditions influence women’s short-term family planning decisions?
 <span id="cb7-2"><a href="#cb7-2"></a>pma <span class="ot">&lt;-</span> pma <span class="sc">%&gt;%</span> <span class="fu">filter</span>(RESULTFQ_1 <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span> RESULTFQ_2 <span class="sc">==</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-</div>
 </section></section>
 <section>
 <section id="gps-data" class="title-slide slide level1 center">
@@ -557,20 +549,18 @@ Do rainfall conditions influence women’s short-term family planning decisions?
 <h2 data-id="quarto-animate-title">About PMA GPS data</h2>
 <div class="columns">
 <div class="column" style="width:60%;">
-<div>
 <div class="fragment fade-in-then-semi-out">
 <p>PMA uses a multi-stage <strong>cluster sample</strong> design.</p>
 </div>
 <div class="fragment fade-in-then-semi-out">
 <p>At the beginning of the panel study, 35 households were randomly selected within each cluster or “enumeration area” (EA).</p>
 </div>
-</div>
 </div><div class="column" style="width:40%;">
 
 </div>
 </div>
 </section>
-<section id="about-pma-gps-data-1" class="slide level2" data-auto-animate="true">
+<section id="about-pma-gps-data-1" class="slide level2" data-auto-animate="true" data-visibility="uncounted">
 <h2 data-id="quarto-animate-title">About PMA GPS data</h2>
 <div class="columns">
 <div class="column" style="width:60%;">
@@ -578,20 +568,18 @@ Do rainfall conditions influence women’s short-term family planning decisions?
 <p>PMA uses a multi-stage <strong>cluster sample</strong> design.</p>
 <p>At the beginning of the panel study, 35 households were randomly selected within each cluster or “enumeration area” (EA).</p>
 </div>
-<div>
 <div class="fragment fade-in-then-semi-out">
 <p>IPUMS PMA does not disseminate the GPS coordinates for EAs, but you may <a href="">apply here</a> for access directly from PMA.</p>
 </div>
 <div class="fragment fade-in-then-semi-out">
 <p>Today, we’ll be using <strong>falsified</strong> GPS coordinates as an example.</p>
 </div>
-</div>
 </div><div class="column" style="width:40%;">
 <p><img data-src="images/pma/gps1.png" class="absolute" style="top: 100px; right: 50px; height: 300px; "></p>
 </div>
 </div>
 </section>
-<section id="about-pma-gps-data-2" class="slide level2" data-auto-animate="true">
+<section id="about-pma-gps-data-2" class="slide level2" data-auto-animate="true" data-visibility="uncounted">
 <h2 data-id="quarto-animate-title">About PMA GPS data</h2>
 <div class="columns">
 <div class="column" style="width:60%;">
@@ -606,7 +594,7 @@ Do rainfall conditions influence women’s short-term family planning decisions?
 </div>
 </div>
 </section>
-<section id="about-pma-gps-data-3" class="slide level2" data-auto-animate="true">
+<section id="about-pma-gps-data-3" class="slide level2" data-auto-animate="true" data-visibility="uncounted">
 <h2 data-id="quarto-animate-title">About PMA GPS data</h2>
 <div class="columns">
 <div class="column" style="width:60%;">
@@ -624,7 +612,6 @@ Do rainfall conditions influence women’s short-term family planning decisions?
 </section>
 <section id="load-pma-gps-data-into-r" class="slide level2">
 <h2>Load PMA GPS data into R</h2>
-<div>
 <div class="fragment">
 <p>A PMA GPS dataset is a simple CSV file with one row per EA, and columns containing latitude and longitude points.</p>
 <div class="cell">
@@ -654,13 +641,15 @@ Do rainfall conditions influence women’s short-term family planning decisions?
 <div class="fragment">
 <p>The column <code>DATUM</code> describes the coordinate reference system: World Geodetic System 1984.</p>
 </div>
-</div>
 </section>
 <section id="gps-data-as-a-simple-features-object" class="slide level2">
 <h2>GPS data as a Simple Features Object</h2>
 <div class="columns">
 <div class="column" style="width:75%;">
+<div class="fragment">
 <p>The <a href="https://r-spatial.github.io/sf/index.html">sf</a> (“simple features”) package for R contains many of the same tools you would find in other GIS software</p>
+</div>
+<div class="fragment">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10" data-code-line-numbers="1,2,5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>gps <span class="ot">&lt;-</span> gps <span class="sc">%&gt;%</span> </span>
 <span id="cb10-2"><a href="#cb10-2"></a>  <span class="fu">st_as_sf</span>(</span>
@@ -668,16 +657,16 @@ Do rainfall conditions influence women’s short-term family planning decisions?
 <span id="cb10-4"><a href="#cb10-4"></a>    <span class="at">crs =</span> <span class="dv">4326</span></span>
 <span id="cb10-5"><a href="#cb10-5"></a>  ) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</div>
 </div><div class="column" style="width:15%;">
 <p><img data-src="images/hex/sf.png" class="absolute" style="top: 90px; right: 0px; height: 200px; "></p>
 </div>
 </div>
 </section>
-<section id="gps-data-as-a-simple-features-object-1" class="slide level2" data-auto-animate="true">
+<section id="gps-data-as-a-simple-features-object-1" class="slide level2" data-auto-animate="true" data-visibility="uncounted">
 <h2 data-id="quarto-animate-title">GPS data as a Simple Features Object</h2>
 <div class="columns">
 <div class="column" style="width:75%;">
-<div>
 <p>The <a href="https://r-spatial.github.io/sf/index.html">sf</a> (“simple features”) package for R contains many of the same tools you would find in other GIS software</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11" data-code-line-numbers="3-4"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb11-1" class="hljs-ln-code"><a href="#cb11-1"></a>gps <span class="ot">&lt;-</span> gps <span class="sc">%&gt;%</span> </span>
@@ -714,7 +703,6 @@ Geodetic CRS:  WGS 84
 </div>
 </div>
 </div>
-</div>
 </div><div class="column" style="width:15%;">
 <p><img data-src="images/hex/sf.png" class="absolute" style="top: 90px; right: 0px; height: 200px; "></p>
 </div>
@@ -727,7 +715,6 @@ Geodetic CRS:  WGS 84
 </section>
 <section id="birth-outcomes-for-individuals" class="slide level2">
 <h2>Birth outcomes for individuals</h2>
-<div>
 <div class="fragment fade-in-then-semi-out">
 <p>The variable <a href="">PANELBIRTH_2</a> indicates whether each woman gave birth within the year that passed between Phase 1 and Phase 2 of the panel study.</p>
 </div>
@@ -764,11 +751,9 @@ We can treat these cases as “No”.
 </div>
 </div>
 </div>
-</div>
 </section>
 <section id="birth-outcomes-by-ea" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Birth outcomes by EA</h2>
-<div>
 <div class="fragment fade-in">
 <p>Where are the enumeration areas with the largest proportion of women who gave birth?</p>
 </div>
@@ -801,9 +786,8 @@ We can treat these cases as “No”.
 </div>
 </div>
 </div>
-</div>
 </section>
-<section id="birth-outcomes-by-ea-1" class="slide level2" data-auto-animate="true">
+<section id="birth-outcomes-by-ea-1" class="slide level2" data-auto-animate="true" data-visibility="uncounted">
 <h2 data-id="quarto-animate-title">Birth outcomes by EA</h2>
 <p>Where are the enumeration areas with the largest proportion of women who gave birth?</p>
 <div class="cell">
@@ -835,7 +819,7 @@ We can treat these cases as “No”.
 </div>
 </div>
 </section>
-<section id="birth-outcomes-by-ea-2" class="slide level2" data-auto-animate="true">
+<section id="birth-outcomes-by-ea-2" class="slide level2" data-auto-animate="true" data-visibility="uncounted">
 <h2 data-id="quarto-animate-title">Birth outcomes by EA</h2>
 <p>Where are the enumeration areas with the largest proportion of women who gave birth?</p>
 <div class="cell">
@@ -870,11 +854,12 @@ We can treat these cases as “No”.
 </section>
 <section id="merging-gps-data" class="slide level2">
 <h2>Merging GPS data</h2>
-<div>
+<div class="fragment">
 <p>Use <code>full_join</code> to merge all rows of <code>ea_summary</code> to <code>gps</code>.</p>
 <p>If you list <code>gps</code> <em>first</em>, the result will be another Simple Features object.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a>ea_summary_gps <span class="ot">&lt;-</span> <span class="fu">full_join</span>(gps <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="at">ea =</span> EAID), ea_summary, <span class="at">by =</span> <span class="st">"ea"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </div>
 <div class="fragment">
 <div class="cell">
@@ -901,17 +886,24 @@ Geodetic CRS:  WGS 84
 </div>
 </div>
 </div>
-</div>
 </section>
 <section id="mapping-births-by-ea" class="slide level2">
 <h2>Mapping births by EA</h2>
+<div class="fragment">
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
 <span id="cb25-2"><a href="#cb25-2"></a>  <span class="fu">layer_spatial</span>(ea_summary_gps, <span class="fu">aes</span>(<span class="at">shape =</span> many_births, <span class="at">color =</span> many_births)) <span class="sc">+</span> </span>
 <span id="cb25-3"><a href="#cb25-3"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-24-1.png" width="960"></p>
+</figure>
 </div>
-<img data-src="slides_files/figure-revealjs/unnamed-chunk-24-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+</div>
+</div>
+</div>
+</section>
 <section id="adding-a-shapefile" class="slide level2">
 <h2>Adding a Shapefile</h2>
 <p>You only need to specify the folder: R will locate the appropriate file.</p>
@@ -949,7 +941,7 @@ First 10 features:
 
 </div>
 <img data-src="slides_files/figure-revealjs/unnamed-chunk-27-1.png" width="960" class="r-stretch quarto-figure-center"></section>
-<section id="mapping-births-by-ea-2" class="slide level2" data-auto-animate="true">
+<section id="mapping-births-by-ea-2" class="slide level2" data-auto-animate="true" data-visibility="uncounted">
 <h2 data-id="quarto-animate-title">Mapping births by EA</h2>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb29" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb29-1" class="hljs-ln-code"><a href="#cb29-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
@@ -977,7 +969,6 @@ First 10 features:
 <div class="column" style="width:75%;">
 <p><img data-src="images/chirps/files.png" class="border border-thick"></p>
 </div><div class="column" style="width:25%;">
-<div>
 <div class="fragment fade-in-then-semi-out">
 <p>When you open your download, you’ll find <em>one file per day</em> in our selected space and time period.</p>
 </div>
@@ -989,11 +980,9 @@ First 10 features:
 </div>
 </div>
 </div>
-</div>
 </section>
 <section id="load-raster-data-into-r" class="slide level2">
 <h2>Load Raster Data into R</h2>
-<div>
 <div class="columns">
 <div class="column" style="width:75%;">
 <p>The <a href="">terra</a> package reads Raster files.</p>
@@ -1024,7 +1013,6 @@ name        : 20200605 </code></pre>
 <li class="fragment">1 <em>layer</em> named <code>20211028</code></li>
 </ul>
 </div>
-</div>
 </section>
 <section id="june-5-2020" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">June 5, 2020</h2>
@@ -1035,7 +1023,7 @@ name        : 20200605 </code></pre>
 <span id="cb32-4" class="hljs-ln-code"><a href="#cb32-4"></a>  <span class="fu">theme_minimal</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="june-5-2020-1" class="slide level2" data-auto-animate="true">
+<section id="june-5-2020-1" class="slide level2" data-auto-animate="true" data-visibility="uncounted">
 <h2 data-id="quarto-animate-title">June 5, 2020</h2>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb33-1" class="hljs-ln-code"><a href="#cb33-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
@@ -1045,7 +1033,7 @@ name        : 20200605 </code></pre>
 
 </div>
 <img data-src="slides_files/figure-revealjs/unnamed-chunk-32-1.png" width="960" class="r-stretch quarto-figure-center"></section>
-<section id="june-5-2020-2" class="slide level2" data-auto-animate="true">
+<section id="june-5-2020-2" class="slide level2" data-auto-animate="true" data-visibility="uncounted">
 <h2 data-id="quarto-animate-title">June 5, 2020</h2>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb34" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb34-1" class="hljs-ln-code"><a href="#cb34-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
@@ -1055,7 +1043,7 @@ name        : 20200605 </code></pre>
 
 </div>
 <img data-src="slides_files/figure-revealjs/unnamed-chunk-33-1.png" width="960" class="r-stretch quarto-figure-center"></section>
-<section id="june-5-2020-3" class="slide level2" data-auto-animate="true">
+<section id="june-5-2020-3" class="slide level2" data-auto-animate="true" data-visibility="uncounted">
 <h2 data-id="quarto-animate-title">June 5, 2020</h2>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb35" data-code-line-numbers="5-7"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb35-1" class="hljs-ln-code"><a href="#cb35-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
@@ -1067,9 +1055,8 @@ name        : 20200605 </code></pre>
 
 </div>
 <img data-src="slides_files/figure-revealjs/unnamed-chunk-34-1.png" width="960" class="r-stretch quarto-figure-center"></section>
-<section id="aggregation" class="slide level2" data-auto-animate="true">
-<h2 data-id="quarto-animate-title">Aggregation</h2>
-<div>
+<section id="aggregation" class="slide level2">
+<h2>Aggregation</h2>
 <div class="fragment">
 <p>Ultimately, you’ll want to work with <code>.tif</code> images from <em>many</em> days at the same time.</p>
 </div>
@@ -1078,11 +1065,11 @@ name        : 20200605 </code></pre>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb36-1" class="hljs-ln-code"><a href="#cb36-1"></a>years <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="dv">1981</span><span class="sc">:</span><span class="dv">2020</span>, <span class="sc">~</span>{</span>
-<span id="cb36-2" class="hljs-ln-code"><a href="#cb36-2"></a>  yr <span class="ot">&lt;-</span> .x</span>
-<span id="cb36-3" class="hljs-ln-code"><a href="#cb36-3"></a>})</span>
-<span id="cb36-4" class="hljs-ln-code"><a href="#cb36-4"></a></span>
-<span id="cb36-5" class="hljs-ln-code"><a href="#cb36-5"></a>years <span class="ot">&lt;-</span> <span class="fu">set_names</span>(years, <span class="dv">1981</span><span class="sc">:</span><span class="dv">2020</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1"></a>years <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="dv">1981</span><span class="sc">:</span><span class="dv">2020</span>, <span class="sc">~</span>{</span>
+<span id="cb36-2"><a href="#cb36-2"></a>  yr <span class="ot">&lt;-</span> .x</span>
+<span id="cb36-3"><a href="#cb36-3"></a>})</span>
+<span id="cb36-4"><a href="#cb36-4"></a></span>
+<span id="cb36-5"><a href="#cb36-5"></a>years <span class="ot">&lt;-</span> <span class="fu">set_names</span>(years, <span class="dv">1981</span><span class="sc">:</span><span class="dv">2020</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
@@ -1210,11 +1197,9 @@ $`2020`
 </div>
 </div>
 </div>
-</div>
 </section>
-<section id="aggregation-1" class="slide level2" data-auto-animate="true">
+<section id="aggregation-1" class="slide level2" data-auto-animate="true" data-visibility="uncounted">
 <h2 data-id="quarto-animate-title">Aggregation</h2>
-<div>
 <p>Ultimately, you’ll want to work with <code>.tif</code> images from <em>many</em> days at the same time.</p>
 <p>We’ll exploit patterns in the name of each file to load all days from each year that fall within the Burkina Faso “rainy season” (June 1 - October 1).</p>
 <div class="cell">
@@ -3781,11 +3766,9 @@ $`2020`
 </div>
 </div>
 </div>
-</div>
 </section>
 <section id="raster-layers" class="slide level2">
 <h2>Raster Layers</h2>
-<div>
 <div class="fragment">
 <p>We now create one <strong>multi-layered</strong> raster for each year, and store all years in one large list.</p>
 <div class="cell">
@@ -3812,11 +3795,9 @@ names       : 20200601, 20200602, 20200603, 20200604, 20200605, 20200606, ... </
 </div>
 </div>
 </div>
-</div>
 </section>
 <section id="seasonal-rainfall-accumulation" class="slide level2">
 <h2>Seasonal Rainfall Accumulation</h2>
-<div>
 <div class="fragment">
 <p>We could now use <code>sum</code> to add all of the daily rainfall totals from the <code>2020</code> rainy season. This reduces the number of layers from 122 to 1.</p>
 </div>
@@ -4287,11 +4268,9 @@ max value   : 1142.682 </code></pre>
 </div>
 </div>
 </div>
-</div>
 </section>
 <section id="one-layer-per-year" class="slide level2">
 <h2>One Layer per Year</h2>
-<div>
 <div class="fragment">
 <p>Now that each year in our list contains only one layer each, we can generate a <em>new</em> multi-layered raster: one layer <em>per year</em>.</p>
 </div>
@@ -4321,11 +4300,9 @@ max values  :  985.3304,  834.6878,  862.3036, 1024.9135, 1053.9604, 1017.6069, 
 <div class="fragment">
 <p>For every 0.05 degrees lat by 0.05 degree lon, we now have the <strong>total seasonal rainfall accumulation</strong> for every year 1981-2020.</p>
 </div>
-</div>
 </section>
 <section id="how-rainy-was-2020" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">How rainy was 2020?</h2>
-<div>
 <div class="fragment">
 <p>To answer this question, we’ll compare total seasonal accumulation in 2020 to the 40-year average.</p>
 </div>
@@ -4362,13 +4339,12 @@ max values  :  1.5658769,  0.8569690,  0.6566302,  1.6017437,  3.1202732,  1.875
 </div>
 </div>
 </div>
-</div>
 </section>
 <section id="seasonal-rainfall-accumulation-1" class="slide level2">
 <h2>2020 Seasonal Rainfall Accumulation</h2>
 <p>Total accumulation relative to local 40-year average</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<div class="sourceCode cell-code" id="cb53" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
 <span id="cb53-2"><a href="#cb53-2"></a>  <span class="fu">layer_spatial</span>(<span class="fu">mask</span>(chirps_z<span class="sc">$</span><span class="st">`</span><span class="at">2020</span><span class="st">`</span>, <span class="fu">vect</span>(shape), <span class="at">touches =</span> <span class="cn">FALSE</span>)) <span class="sc">+</span> </span>
 <span id="cb53-3"><a href="#cb53-3"></a>  <span class="fu">layer_spatial</span>(shape, <span class="at">alpha =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
 <span id="cb53-4"><a href="#cb53-4"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
@@ -4380,75 +4356,407 @@ max values  :  1.5658769,  0.8569690,  0.6566302,  1.6017437,  3.1202732,  1.875
 <section>
 <section id="bringing-it-all-together" class="title-slide slide level1 center">
 <h1>5 - Bringing it All Together</h1>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">eval =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+
 </section>
-<section id="precision-where-do-sample-members-live" class="slide level2">
-<h2>Precision: where do sample members live?</h2>
+<section id="pma-displacement-protocol" class="slide level2">
+<h2>PMA displacement protocol</h2>
 <div style="text-align: center; margin-top: 1em">
-<p><img data-src="images/displacement.png" height="500"></p>
+<p><img data-src="images/displacement.png" height="400"></p>
+</div>
+<p>In order to preserve confidentiality, PMA displaces the centroid location of each EA up to 2 km (urban areas) or 5 km (rural areas).</p>
+<p>Displacement does not cross admin 1 boundaries.</p>
+</section>
+<section id="from-points-to-buffers" class="slide level2">
+<h2>From Points to Buffers</h2>
+<div class="fragment">
+<p>Remember: our GPS data contain discrete points.</p>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 167 features and 5 fields
+Geometry type: POINT
+Dimension:     XY
+Bounding box:  xmin: -5.277929 ymin: 10.29263 xmax: 0.6744602 ymax: 14.21399
+Geodetic CRS:  WGS 84
+# A tibble: 167 × 6
+          ea               geometry urban birth_prop ntile many_births
+       &lt;dbl&gt;            &lt;POINT [°]&gt; &lt;lgl&gt;      &lt;dbl&gt; &lt;int&gt; &lt;lgl&gt;      
+ 1 854181006  (-0.1595212 13.36634) FALSE      0.240     2 TRUE       
+ 2 854131035   (-1.467466 12.43239) TRUE       0         1 FALSE      
+ 3 854161005   (-1.915129 11.13271) TRUE       0.232     2 TRUE       
+ 4 854201013   (-2.542757 12.88571) FALSE      0.241     2 TRUE       
+ 5 854191041   (-4.232418 11.19971) TRUE       0.129     1 FALSE      
+ 6 854121002    (-4.83967 10.29263) TRUE       0.161     2 TRUE       
+ 7 854161009   (-2.204062 12.75554) FALSE      0.162     2 TRUE       
+ 8 854181005 (-0.03191096 12.45061) FALSE      0.303     2 TRUE       
+ 9 854201005   (-1.895065 12.90935) FALSE      0.183     2 TRUE       
+10 854191026   (-5.239322 11.37056) FALSE      0.137     2 TRUE       
+# … with 157 more rows</code></pre>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>We should use all of the available climate data for the complete <strong>buffer zones</strong>, which may span multiple pixels in our raster!</p>
 </div>
 </section>
-<section id="buffers" class="slide level2">
-<h2>Buffers</h2>
+<section id="meters-on-a-round-planet" class="slide level2">
+<h2>Meters on a Round Planet</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<div class="fragment">
+<p>First we need to change the <code>geometry</code> of our data from arc-degrees to linear meters.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1"></a>ea_summary_gps <span class="ot">&lt;-</span> ea_summary_gps <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">32630</span>)</span>
-<span id="cb55-2"><a href="#cb55-2"></a>shape <span class="ot">&lt;-</span> shape <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">32630</span>)</span>
-<span id="cb55-3"><a href="#cb55-3"></a></span>
-<span id="cb55-4"><a href="#cb55-4"></a>ea_summary_gps <span class="ot">&lt;-</span> ea_summary_gps <span class="sc">%&gt;%</span> </span>
-<span id="cb55-5"><a href="#cb55-5"></a>  <span class="fu">st_buffer</span>(<span class="fu">if_else</span>(.<span class="sc">$</span>urban, <span class="dv">2000</span>, <span class="dv">5000</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb55-6"><a href="#cb55-6"></a>  <span class="fu">st_intersection</span>(shape) <span class="sc">%&gt;%</span> </span>
-<span id="cb55-7"><a href="#cb55-7"></a>  <span class="fu">st_filter</span>(ea_summary_gps)</span>
-<span id="cb55-8"><a href="#cb55-8"></a></span>
-<span id="cb55-9"><a href="#cb55-9"></a>ea_summary_gps <span class="ot">&lt;-</span> ea_summary_gps <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">4326</span>)</span>
-<span id="cb55-10"><a href="#cb55-10"></a>shape <span class="ot">&lt;-</span> shape <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">4326</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 167 features and 5 fields
+Geometry type: POINT
+Dimension:     XY
+Bounding box:  xmin: -5.277929 ymin: 10.29263 xmax: 0.6744602 ymax: 14.21399
+Geodetic CRS:  WGS 84
+# A tibble: 167 × 6
+          ea               geometry urban birth_prop ntile many_births
+       &lt;dbl&gt;            &lt;POINT [°]&gt; &lt;lgl&gt;      &lt;dbl&gt; &lt;int&gt; &lt;lgl&gt;      
+ 1 854181006  (-0.1595212 13.36634) FALSE      0.240     2 TRUE       
+ 2 854131035   (-1.467466 12.43239) TRUE       0         1 FALSE      
+ 3 854161005   (-1.915129 11.13271) TRUE       0.232     2 TRUE       
+ 4 854201013   (-2.542757 12.88571) FALSE      0.241     2 TRUE       
+ 5 854191041   (-4.232418 11.19971) TRUE       0.129     1 FALSE      
+ 6 854121002    (-4.83967 10.29263) TRUE       0.161     2 TRUE       
+ 7 854161009   (-2.204062 12.75554) FALSE      0.162     2 TRUE       
+ 8 854181005 (-0.03191096 12.45061) FALSE      0.303     2 TRUE       
+ 9 854201005   (-1.895065 12.90935) FALSE      0.183     2 TRUE       
+10 854191026   (-5.239322 11.37056) FALSE      0.137     2 TRUE       
+# … with 157 more rows</code></pre>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p><span style="color: #98579B">Failure to do so would mean that the length of 2000 or 5000 meters would differ as you travel away from the equator. </span></p>
+</div>
+</div><div class="column" style="width:40%;">
+<p><img data-src="images/projection.gif" class="absolute" style="top: 100px; right: 0px; height: 500px; "></p>
+</div>
 </div>
 </section>
-<section id="pma-sample-cluster-locations" class="slide level2">
-<h2>PMA Sample Cluster Locations</h2>
+<section id="projection-to-meters" class="slide level2">
+<h2>Projection to Meters</h2>
+<div class="fragment">
+<p>We’ll use <a href="https://epsg.io/32630">EPSG code 32630</a> to focus our new projection around Burkina Faso.</p>
+</div>
+<div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1"></a><span class="co"># Buffer zones are drawn to scale, and do not overlap admin1 boundaries </span></span>
-<span id="cb56-2"><a href="#cb56-2"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
-<span id="cb56-3"><a href="#cb56-3"></a>  <span class="fu">layer_spatial</span>(shape, <span class="at">alpha =</span> <span class="dv">0</span>) <span class="sc">+</span> </span>
-<span id="cb56-4"><a href="#cb56-4"></a>  <span class="fu">layer_spatial</span>(ea_summary_gps, <span class="fu">aes</span>(<span class="at">fill =</span> many_births), <span class="at">color =</span> <span class="dv">0</span>) <span class="sc">+</span> </span>
-<span id="cb56-5"><a href="#cb56-5"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1"></a>ea_summary_gps <span class="ot">&lt;-</span> ea_summary_gps <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">32630</span>)</span>
+<span id="cb56-2"><a href="#cb56-2"></a>shape <span class="ot">&lt;-</span> shape <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">32630</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 167 features and 5 fields
+Geometry type: POINT
+Dimension:     XY
+Bounding box:  xmin: 250808.3 ymin: 1138345 xmax: 899207.2 ymax: 1573191
+Projected CRS: WGS 84 / UTM zone 30N
+# A tibble: 167 × 6
+          ea           geometry urban birth_prop ntile many_births
+ *     &lt;dbl&gt;        &lt;POINT [m]&gt; &lt;lgl&gt;      &lt;dbl&gt; &lt;int&gt; &lt;lgl&gt;      
+ 1 854181006 (807680.7 1479413) FALSE      0.240     2 TRUE       
+ 2 854131035 (666577.8 1374847) TRUE       0         1 FALSE      
+ 3 854161005 (618468.7 1230870) TRUE       0.232     2 TRUE       
+ 4 854201013 (549607.1 1424541) FALSE      0.241     2 TRUE       
+ 5 854191041 (365447.7 1238343) TRUE       0.129     1 FALSE      
+ 6 854121002 (298530.9 1138345) TRUE       0.161     2 TRUE       
+ 7 854161009 (586398.8 1410234) FALSE      0.162     2 TRUE       
+ 8 854181005 (822688.7 1378185) FALSE      0.303     2 TRUE       
+ 9 854201005 (619870.7 1427369) FALSE      0.183     2 TRUE       
+10 854191026 (255620.7 1257895) FALSE      0.137     2 TRUE       
+# … with 157 more rows</code></pre>
+</div>
+</div>
 </div>
 </section>
-<section id="assign-each-ea-one-z-score" class="slide level2">
-<h2>Assign each EA one Z-score</h2>
+<section id="creating-buffers" class="slide level2">
+<h2>Creating Buffers</h2>
+<div class="fragment">
+<p>Draw a 2000 meter urban buffer, or a 5000 meter rural buffer around each centroid.</p>
+</div>
+<div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1"></a><span class="co"># Example: there are 6 pixels for this EA</span></span>
-<span id="cb57-2"><a href="#cb57-2"></a>ex <span class="ot">&lt;-</span> ea_summary_gps <span class="sc">%&gt;%</span> <span class="fu">filter</span>(ea <span class="sc">==</span> <span class="dv">854131014</span>)</span>
-<span id="cb57-3"><a href="#cb57-3"></a></span>
-<span id="cb57-4"><a href="#cb57-4"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
-<span id="cb57-5"><a href="#cb57-5"></a>  <span class="fu">layer_spatial</span>(chirps_z20 <span class="sc">%&gt;%</span> <span class="fu">crop</span>(ex, <span class="at">snap =</span> <span class="st">"out"</span>)) <span class="sc">+</span> </span>
-<span id="cb57-6"><a href="#cb57-6"></a>  <span class="fu">layer_spatial</span>(ex, <span class="at">alpha =</span> <span class="dv">0</span>) <span class="sc">+</span> </span>
-<span id="cb57-7"><a href="#cb57-7"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
-<span id="cb57-8"><a href="#cb57-8"></a>  <span class="fu">scale_fill_gradient2</span>(</span>
-<span id="cb57-9"><a href="#cb57-9"></a>    <span class="at">low =</span> <span class="st">"#D72B22"</span>, <span class="co"># red </span></span>
-<span id="cb57-10"><a href="#cb57-10"></a>    <span class="at">high =</span> <span class="st">"#4375B7"</span>, <span class="co"># blue</span></span>
-<span id="cb57-11"><a href="#cb57-11"></a>    <span class="at">na.value =</span> <span class="st">"transparent"</span>,</span>
-<span id="cb57-12"><a href="#cb57-12"></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">4</span>, <span class="dv">4</span>)</span>
-<span id="cb57-13"><a href="#cb57-13"></a>  )</span>
-<span id="cb57-14"><a href="#cb57-14"></a></span>
-<span id="cb57-15"><a href="#cb57-15"></a><span class="co"># We'll take the average Z-score for these 6 pixels, but weight by area</span></span>
-<span id="cb57-16"><a href="#cb57-16"></a>ex <span class="ot">&lt;-</span> chirps_z<span class="sc">$</span><span class="st">`</span><span class="at">2020</span><span class="st">`</span> <span class="sc">%&gt;%</span> <span class="fu">extract</span>(<span class="fu">vect</span>(ex), <span class="at">weights =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb57-17"><a href="#cb57-17"></a>ex </span>
-<span id="cb57-18"><a href="#cb57-18"></a>ex <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">wtd_mean =</span> <span class="fu">weighted.mean</span>(<span class="st">`</span><span class="at">2020</span><span class="st">`</span>, weight))</span>
-<span id="cb57-19"><a href="#cb57-19"></a></span>
-<span id="cb57-20"><a href="#cb57-20"></a><span class="co"># Now, we do it with all EAs</span></span>
-<span id="cb57-21"><a href="#cb57-21"></a>ea_summary_gps <span class="ot">&lt;-</span> ea_summary_gps <span class="sc">%&gt;%</span> <span class="fu">rowid_to_column</span>(<span class="st">"ID"</span>)</span>
-<span id="cb57-22"><a href="#cb57-22"></a></span>
-<span id="cb57-23"><a href="#cb57-23"></a>ea_summary_gps <span class="ot">&lt;-</span> chirps_z20 <span class="sc">%&gt;%</span> </span>
-<span id="cb57-24"><a href="#cb57-24"></a>  <span class="fu">extract</span>(<span class="fu">vect</span>(ea_summary_gps), <span class="at">weights =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb57-25"><a href="#cb57-25"></a>  <span class="fu">tibble</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb57-26"><a href="#cb57-26"></a>  <span class="fu">group_by</span>(ID) <span class="sc">%&gt;%</span> </span>
-<span id="cb57-27"><a href="#cb57-27"></a>  <span class="fu">summarise</span>(<span class="at">Z =</span> <span class="fu">weighted.mean</span>(<span class="st">`</span><span class="at">2020</span><span class="st">`</span>, weight)) <span class="sc">%&gt;%</span> </span>
-<span id="cb57-28"><a href="#cb57-28"></a>  <span class="fu">full_join</span>(ea_summary_gps, <span class="at">by =</span> <span class="st">"ID"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb57-29"><a href="#cb57-29"></a>  <span class="fu">select</span>(<span class="sc">-</span>geometry)</span>
-<span id="cb57-30"><a href="#cb57-30"></a></span>
-<span id="cb57-31"><a href="#cb57-31"></a>ea_summary_gps</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1"></a>ea_summary_buffer <span class="ot">&lt;-</span> ea_summary_gps <span class="sc">%&gt;%</span> <span class="fu">st_buffer</span>(<span class="fu">if_else</span>(.<span class="sc">$</span>urban, <span class="dv">2000</span>, <span class="dv">5000</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 167 features and 5 fields
+Geometry type: POLYGON
+Dimension:     XY
+Bounding box:  xmin: 245808.3 ymin: 1136345 xmax: 901207.2 ymax: 1575191
+Projected CRS: WGS 84 / UTM zone 30N
+# A tibble: 167 × 6
+          ea                         geometry urban birth_prop ntile many_births
+ *     &lt;dbl&gt;                    &lt;POLYGON [m]&gt; &lt;lgl&gt;      &lt;dbl&gt; &lt;int&gt; &lt;lgl&gt;      
+ 1 854181006 ((812680.7 1479413, 812673.8 14… FALSE      0.240     2 TRUE       
+ 2 854131035 ((668577.8 1374847, 668575.1 13… TRUE       0         1 FALSE      
+ 3 854161005 ((620468.7 1230870, 620466 1230… TRUE       0.232     2 TRUE       
+ 4 854201013 ((554607.1 1424541, 554600.3 14… FALSE      0.241     2 TRUE       
+ 5 854191041 ((367447.7 1238343, 367445 1238… TRUE       0.129     1 FALSE      
+ 6 854121002 ((300530.9 1138345, 300528.1 11… TRUE       0.161     2 TRUE       
+ 7 854161009 ((591398.8 1410234, 591392 1409… FALSE      0.162     2 TRUE       
+ 8 854181005 ((827688.7 1378185, 827681.8 13… FALSE      0.303     2 TRUE       
+ 9 854201005 ((624870.7 1427369, 624863.9 14… FALSE      0.183     2 TRUE       
+10 854191026 ((260620.7 1257895, 260613.8 12… FALSE      0.137     2 TRUE       
+# … with 157 more rows</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="intersecting-regional-boundaries" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Intersecting Regional Boundaries</h2>
+<div class="columns">
+<div class="column" style="width:40%;">
+<div class="fragment">
+<p>In certain cases, a buffer may cross an admin 1 boundary in <code>shape</code>.</p>
+</div>
+<div class="fragment">
+<p>For example, we’ll look at enumeration area <code>854131009</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1"></a>test_ea <span class="ot">&lt;-</span> <span class="dv">854131009</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div><div class="column" style="width:60%;">
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-57-1.png" width="960"></p>
+</div>
+</div>
+</div>
+</div><div class="fragment">
+<p>We should only keep the segment containing the original centroid.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1"></a>ea_summary_buffer <span class="ot">&lt;-</span> ea_summary_buffer <span class="sc">%&gt;%</span> </span>
+<span id="cb61-2"><a href="#cb61-2"></a>  <span class="fu">st_intersection</span>(shape) <span class="sc">%&gt;%</span> </span>
+<span id="cb61-3"><a href="#cb61-3"></a>  <span class="fu">st_filter</span>(ea_summary_gps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="intersecting-regional-boundaries-1" class="slide level2" data-auto-animate="true" data-visibility="uncounted">
+<h2 data-id="quarto-animate-title">Intersecting Regional Boundaries</h2>
+<div class="columns">
+<div class="column" style="width:40%;">
+<p>In certain cases, a buffer may cross an admin 1 boundary in <code>shape</code>.</p>
+<p>For example, we’ll look at enumeration area <code>854131009</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1"></a>test_ea <span class="ot">&lt;-</span> <span class="dv">854131009</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column" style="width:60%;">
+<div class="cell">
+<div class="cell-output-display">
+<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-60-1.png" width="960"></p>
+</div>
+</div>
+</div><p>We should only keep the segment containing the original centroid.</p><div class="cell">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1"></a>ea_summary_buffer <span class="ot">&lt;-</span> ea_summary_buffer <span class="sc">%&gt;%</span> </span>
+<span id="cb63-2"><a href="#cb63-2"></a>  <span class="fu">st_intersection</span>(shape) <span class="sc">%&gt;%</span> </span>
+<span id="cb63-3"><a href="#cb63-3"></a>  <span class="fu">st_filter</span>(ea_summary_gps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</section>
+<section id="back-to-arc-degrees" class="slide level2">
+<h2>Back to arc-degrees</h2>
+<div class="fragment">
+<p>Finally, we can return to our original CRS.</p>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1"></a>ea_summary_buffer <span class="ot">&lt;-</span> ea_summary_buffer <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">4326</span>)</span>
+<span id="cb64-2"><a href="#cb64-2"></a>shape <span class="ot">&lt;-</span> shape <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">4326</span>)</span>
+<span id="cb64-3"><a href="#cb64-3"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb64-4"><a href="#cb64-4"></a>  <span class="fu">layer_spatial</span>(shape, <span class="at">alpha =</span> <span class="dv">0</span>) <span class="sc">+</span> </span>
+<span id="cb64-5"><a href="#cb64-5"></a>  <span class="fu">layer_spatial</span>(ea_summary_buffer, <span class="fu">aes</span>(<span class="at">fill =</span> many_births), <span class="at">color =</span> <span class="dv">0</span>) <span class="sc">+</span> </span>
+<span id="cb64-6"><a href="#cb64-6"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-62-1.png" width="960"></p>
+</div>
+</div>
+</div>
+</section>
+<section id="spatially-weighted-averages" class="slide level2">
+<h2>Spatially Weighted Averages</h2>
+<div class="columns">
+<div class="column" style="width:60%&quot;;">
+<p>Our example EA overlaps 6 CHIRPS pixels</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1"></a>test_buffer <span class="ot">&lt;-</span> ea_summary_buffer <span class="sc">%&gt;%</span> </span>
+<span id="cb65-2"><a href="#cb65-2"></a>  <span class="fu">filter</span>(ea <span class="sc">==</span> test_ea)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb66-2"><a href="#cb66-2"></a>  <span class="fu">layer_spatial</span>(</span>
+<span id="cb66-3"><a href="#cb66-3"></a>    chirps_z<span class="sc">$</span><span class="st">`</span><span class="at">2020</span><span class="st">`</span> <span class="sc">%&gt;%</span> </span>
+<span id="cb66-4"><a href="#cb66-4"></a>      <span class="fu">crop</span>(test_buffer, <span class="at">snap =</span> <span class="st">"out"</span>)</span>
+<span id="cb66-5"><a href="#cb66-5"></a>  ) <span class="sc">+</span> </span>
+<span id="cb66-6"><a href="#cb66-6"></a>  <span class="fu">layer_spatial</span>(test_buffer, <span class="at">alpha =</span> <span class="dv">0</span>) <span class="sc">+</span> </span>
+<span id="cb66-7"><a href="#cb66-7"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb66-8"><a href="#cb66-8"></a>  <span class="fu">scale_fill_gradient2</span>(</span>
+<span id="cb66-9"><a href="#cb66-9"></a>    <span class="at">high =</span> <span class="st">"#4375B7"</span>, </span>
+<span id="cb66-10"><a href="#cb66-10"></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">2</span>)</span>
+<span id="cb66-11"><a href="#cb66-11"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column" style="width:40%;">
+<div class="cell">
+<div class="cell-output-display">
+<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-65-1.png" width="672"></p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="spatially-weighted-averages-1" class="slide level2">
+<h2>Spatially Weighted Averages</h2>
+<div class="columns">
+<div class="column" style="width:60%&quot;;">
+<div class="fragment">
+<p>We want a spatial average of these 6 pixels, where the “weight” is the proportion of the pixel included in the buffer zone.</p>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1"></a>test_z <span class="ot">&lt;-</span> chirps_z<span class="sc">$</span><span class="st">`</span><span class="at">2020</span><span class="st">`</span> <span class="sc">%&gt;%</span></span>
+<span id="cb67-2"><a href="#cb67-2"></a>  <span class="fu">extract</span>(<span class="fu">vect</span>(test_buffer), <span class="at">weights =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>  ID     2020 weight
+1  1 1.251417   0.01
+2  1 1.279429   0.35
+3  1 1.482429   0.24
+4  1 1.367945   0.26
+5  1 1.406798   1.00
+6  1 1.550314   0.53
+7  1 1.501302   0.18
+8  1 1.509902   0.03</code></pre>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1"></a>test_z <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(</span>
+<span id="cb69-2"><a href="#cb69-2"></a>  <span class="at">wtd_mean =</span> <span class="fu">weighted.mean</span>(<span class="st">`</span><span class="at">2020</span><span class="st">`</span>, weight)</span>
+<span id="cb69-3"><a href="#cb69-3"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  wtd_mean
+1 1.429138</code></pre>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:40%;">
+<div class="cell">
+<div class="cell-output-display">
+<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-69-1.png" width="672"></p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="enumeration-area-z-scores" class="slide level2" data-auto-animate="true" data-visibility="uncounted">
+<h2 data-id="quarto-animate-title">Enumeration Area Z-scores</h2>
+<div class="fragment">
+<p>Link by row ID</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb71-1" class="hljs-ln-code"><a href="#cb71-1"></a>ea_summary_buffer <span class="ot">&lt;-</span> ea_summary_buffer <span class="sc">%&gt;%</span> <span class="fu">rowid_to_column</span>(<span class="st">"ID"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 167 features and 8 fields
+Geometry type: POLYGON
+Dimension:     XY
+Bounding box:  xmin: -5.32361 ymin: 10.27455 xmax: 0.6928422 ymax: 14.23206
+Geodetic CRS:  WGS 84
+# A tibble: 167 × 9
+      ID        ea urban birth_prop ntile many_births ADMIN_NAME    ADMIN_NAME.1
+   &lt;int&gt;     &lt;dbl&gt; &lt;lgl&gt;      &lt;dbl&gt; &lt;int&gt; &lt;lgl&gt;       &lt;chr&gt;         &lt;chr&gt;       
+ 1     1 854111012 TRUE      0.253      2 TRUE        Boucle du Mo… Boucle du M…
+ 2     2 854111006 TRUE      0.107      1 FALSE       Boucle du Mo… Boucle du M…
+ 3     3 854111002 TRUE      0.0469     1 FALSE       Boucle du Mo… Boucle du M…
+ 4     4 854111007 FALSE     0.218      2 TRUE        Boucle du Mo… Boucle du M…
+ 5     5 854111011 FALSE     0.150      2 TRUE        Boucle du Mo… Boucle du M…
+ 6     6 854111008 FALSE     0.209      2 TRUE        Boucle du Mo… Boucle du M…
+ 7     7 854191039 TRUE      0.196      2 TRUE        Boucle du Mo… Boucle du M…
+ 8     8 854111003 TRUE      0.190      2 TRUE        Boucle du Mo… Boucle du M…
+ 9     9 854191008 FALSE     0.190      2 TRUE        Boucle du Mo… Boucle du M…
+10    10 854111010 TRUE      0.148      2 TRUE        Boucle du Mo… Boucle du M…
+# … with 157 more rows, and 1 more variable: geometry &lt;POLYGON [°]&gt;</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="enumeration-area-z-scores-1" class="slide level2" data-auto-animate="true" data-visibility="uncounted">
+<h2 data-id="quarto-animate-title">Enumeration Area Z-scores</h2>
+<div class="fragment">
+<p>Calculate one z-score per row ID</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb73-1" class="hljs-ln-code"><a href="#cb73-1"></a>ea_summary_z <span class="ot">&lt;-</span> chirps_z<span class="sc">$</span><span class="st">`</span><span class="at">2020</span><span class="st">`</span> <span class="sc">%&gt;%</span> </span>
+<span id="cb73-2" class="hljs-ln-code"><a href="#cb73-2"></a>  <span class="fu">extract</span>(<span class="fu">vect</span>(ea_summary_buffer), <span class="at">weights =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb73-3" class="hljs-ln-code"><a href="#cb73-3"></a>  <span class="fu">tibble</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb73-4" class="hljs-ln-code"><a href="#cb73-4"></a>  <span class="fu">group_by</span>(ID) <span class="sc">%&gt;%</span> </span>
+<span id="cb73-5" class="hljs-ln-code"><a href="#cb73-5"></a>  <span class="fu">summarise</span>(<span class="at">z =</span> <span class="fu">weighted.mean</span>(<span class="st">`</span><span class="at">2020</span><span class="st">`</span>, weight)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 167 × 2
+      ID     z
+   &lt;dbl&gt; &lt;dbl&gt;
+ 1     1 1.04 
+ 2     2 0.810
+ 3     3 0.651
+ 4     4 0.931
+ 5     5 1.17 
+ 6     6 1.61 
+ 7     7 1.26 
+ 8     8 0.969
+ 9     9 0.989
+10    10 0.736
+# … with 157 more rows</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="enumeration-area-z-scores-2" class="slide level2" data-auto-animate="true" data-visibility="uncounted">
+<h2 data-id="quarto-animate-title">Enumeration Area Z-scores</h2>
+<div class="fragment">
+<p>… and join z-scores back with the <code>ea</code> codes for each enumeration area</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb75-1" class="hljs-ln-code"><a href="#cb75-1"></a>ea_summary_z <span class="ot">&lt;-</span> ea_summary_buffer <span class="sc">%&gt;%</span> </span>
+<span id="cb75-2" class="hljs-ln-code"><a href="#cb75-2"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb75-3" class="hljs-ln-code"><a href="#cb75-3"></a>  <span class="fu">select</span>(ID, ea) <span class="sc">%&gt;%</span> </span>
+<span id="cb75-4" class="hljs-ln-code"><a href="#cb75-4"></a>  <span class="fu">full_join</span>(ea_summary_z, <span class="at">by =</span> <span class="st">"ID"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 167 × 3
+      ID        ea     z
+   &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;
+ 1     1 854111012 1.04 
+ 2     2 854111006 0.810
+ 3     3 854111002 0.651
+ 4     4 854111007 0.931
+ 5     5 854111011 1.17 
+ 6     6 854111008 1.61 
+ 7     7 854191039 1.26 
+ 8     8 854111003 0.969
+ 9     9 854191008 0.989
+10    10 854111010 0.736
+# … with 157 more rows</code></pre>
+</div>
+</div>
 </div>
 </section></section>
 <section>
@@ -4456,39 +4764,80 @@ max values  :  1.5658769,  0.8569690,  0.6566302,  1.6017437,  3.1202732,  1.875
 <h1>6 - Analysis</h1>
 
 </section>
-<section id="join-individual-pma-records-together-with-z-scores-for-each-ea" class="slide level2">
-<h2>Join individual PMA records together with Z-scores for each EA</h2>
+<section id="join-z-scores-with-original-pma-data" class="slide level2">
+<h2>Join Z-scores with Original PMA Data</h2>
+<div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1"></a>pma_chirps <span class="ot">&lt;-</span> pma <span class="sc">%&gt;%</span> </span>
-<span id="cb58-2"><a href="#cb58-2"></a>  <span class="fu">transmute</span>(</span>
-<span id="cb58-3"><a href="#cb58-3"></a>    <span class="at">ea =</span> EAID_1, </span>
-<span id="cb58-4"><a href="#cb58-4"></a>    <span class="at">wt =</span> PANELWEIGHT,</span>
-<span id="cb58-5"><a href="#cb58-5"></a>    <span class="at">birth =</span> PANELBIRTH_2 <span class="sc">==</span> <span class="dv">1</span></span>
-<span id="cb58-6"><a href="#cb58-6"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb58-7"><a href="#cb58-7"></a>  <span class="fu">left_join</span>(ea_summary_gps, <span class="at">by =</span> <span class="st">"ea"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1"></a>pma_chirps <span class="ot">&lt;-</span> pma <span class="sc">%&gt;%</span> </span>
+<span id="cb77-2"><a href="#cb77-2"></a>  <span class="fu">transmute</span>(</span>
+<span id="cb77-3"><a href="#cb77-3"></a>    <span class="at">ea =</span> EAID_1, </span>
+<span id="cb77-4"><a href="#cb77-4"></a>    <span class="at">wt =</span> PANELWEIGHT,</span>
+<span id="cb77-5"><a href="#cb77-5"></a>    <span class="at">birth =</span> PANELBIRTH_2 <span class="sc">==</span> <span class="dv">1</span>,</span>
+<span id="cb77-6"><a href="#cb77-6"></a>    <span class="at">urban =</span> URBAN <span class="sc">==</span> <span class="dv">1</span></span>
+<span id="cb77-7"><a href="#cb77-7"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb77-8"><a href="#cb77-8"></a>  <span class="fu">left_join</span>(ea_summary_z, <span class="at">by =</span> <span class="st">"ea"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5,487 × 6
+          ea    wt birth urban    ID     z
+       &lt;dbl&gt; &lt;dbl&gt; &lt;lgl&gt; &lt;lgl&gt; &lt;dbl&gt; &lt;dbl&gt;
+ 1 854111005 2.50  TRUE  FALSE    12 1.56 
+ 2 854111004 2.61  TRUE  FALSE    13 1.48 
+ 3 854161007 3.21  FALSE FALSE    75 0.545
+ 4 854141008 0.538 FALSE TRUE     53 1.31 
+ 5 854191022 0.358 FALSE FALSE   107 1.10 
+ 6 854141002 3.20  FALSE FALSE    51 1.01 
+ 7 854131034 0.404 FALSE TRUE     28 1.45 
+ 8 854191036 0.314 TRUE  FALSE    96 0.875
+ 9 854121003 0.337 FALSE TRUE     17 1.42 
+10 854231003 2.55  FALSE FALSE   166 0.600
+# … with 5,477 more rows</code></pre>
+</div>
+</div>
 </div>
 </section>
 <section id="binomial-model-with-cluster-robust-ses" class="slide level2">
 <h2>Binomial model with cluster-robust SEs</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1"></a><span class="co"># Weighted with cluster-robust SEs</span></span>
-<span id="cb59-2"><a href="#cb59-2"></a>pma_chirps <span class="sc">%&gt;%</span></span>
-<span id="cb59-3"><a href="#cb59-3"></a>  <span class="fu">as_survey_design</span>(<span class="at">weight =</span> wt, <span class="at">id =</span> ea) <span class="sc">%&gt;%</span></span>
-<span id="cb59-4"><a href="#cb59-4"></a>  <span class="fu">svyglm</span>(birth <span class="sc">~</span> Z<span class="sc">*</span>urban, <span class="at">design =</span> ., <span class="at">family =</span> <span class="st">"quasibinomial"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb59-5"><a href="#cb59-5"></a>  <span class="fu">tidy</span>(<span class="at">exp =</span> <span class="cn">TRUE</span>, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb59-6"><a href="#cb59-6"></a>  <span class="fu">mutate</span>(<span class="at">sig =</span> gtools<span class="sc">::</span><span class="fu">stars.pval</span>(p.value))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1"></a><span class="co"># Weighted with cluster-robust SEs</span></span>
+<span id="cb79-2"><a href="#cb79-2"></a>pma_chirps <span class="sc">%&gt;%</span></span>
+<span id="cb79-3"><a href="#cb79-3"></a>  <span class="fu">as_survey_design</span>(<span class="at">weight =</span> wt, <span class="at">id =</span> ea) <span class="sc">%&gt;%</span></span>
+<span id="cb79-4"><a href="#cb79-4"></a>  <span class="fu">svyglm</span>(birth <span class="sc">~</span> z<span class="sc">*</span>urban, <span class="at">design =</span> ., <span class="at">family =</span> <span class="st">"quasibinomial"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb79-5"><a href="#cb79-5"></a>  <span class="fu">tidy</span>(<span class="at">exp =</span> <span class="cn">TRUE</span>, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb79-6"><a href="#cb79-6"></a>  <span class="fu">mutate</span>(<span class="at">sig =</span> gtools<span class="sc">::</span><span class="fu">stars.pval</span>(p.value))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 8
+  term        estimate std.error statistic  p.value conf.low conf.high sig  
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;
+1 (Intercept)    0.164    0.174    -10.4   1.10e-19    0.116     0.231 "***"
+2 z              1.22     0.0862     2.32  2.16e- 2    1.03      1.45  "*"  
+3 urbanTRUE      0.871    0.272     -0.508 6.12e- 1    0.508     1.49  " "  
+4 z:urbanTRUE    0.769    0.196     -1.34  1.83e- 1    0.522     1.13  " "  </code></pre>
+</div>
 </div>
 </section>
 <section id="multilevel-model-with-ea-random-effects" class="slide level2">
 <h2>Multilevel model with EA random effects</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1"></a><span class="co"># Unweighted with EA random effects </span></span>
-<span id="cb60-2"><a href="#cb60-2"></a><span class="fu">glmer</span>(</span>
-<span id="cb60-3"><a href="#cb60-3"></a>  birth <span class="sc">~</span> Z<span class="sc">*</span>urban <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> ea), </span>
-<span id="cb60-4"><a href="#cb60-4"></a>  <span class="at">data =</span> pma_chirps,</span>
-<span id="cb60-5"><a href="#cb60-5"></a>  <span class="at">family =</span> <span class="st">"binomial"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb60-6"><a href="#cb60-6"></a>  <span class="fu">tidy</span>(<span class="at">exp =</span> <span class="cn">TRUE</span>, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb60-7"><a href="#cb60-7"></a>  <span class="fu">mutate</span>(<span class="at">sig =</span> gtools<span class="sc">::</span><span class="fu">stars.pval</span>(p.value))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1"></a><span class="fu">glmer</span>(</span>
+<span id="cb81-2"><a href="#cb81-2"></a>  birth <span class="sc">~</span> z<span class="sc">*</span>urban <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> ea), </span>
+<span id="cb81-3"><a href="#cb81-3"></a>  <span class="at">data =</span> pma_chirps,</span>
+<span id="cb81-4"><a href="#cb81-4"></a>  <span class="at">family =</span> <span class="st">"binomial"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb81-5"><a href="#cb81-5"></a>  <span class="fu">tidy</span>(<span class="at">exp =</span> <span class="cn">TRUE</span>, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb81-6"><a href="#cb81-6"></a>  <span class="fu">mutate</span>(<span class="at">sig =</span> gtools<span class="sc">::</span><span class="fu">stars.pval</span>(p.value))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 10
+  effect   group term            estimate std.error statistic   p.value conf.low conf.high sig  
+  &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;              &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;
+1 fixed    &lt;NA&gt;  (Intercept)        0.147    0.0257   -11.0    6.38e-28    0.104     0.207 "***"
+2 fixed    &lt;NA&gt;  z                  1.26     0.162      1.82   6.87e- 2    0.982     1.63  "."  
+3 fixed    &lt;NA&gt;  urbanTRUE          1.11     0.294      0.389  6.97e- 1    0.660     1.86  " "  
+4 fixed    &lt;NA&gt;  z:urbanTRUE        0.671    0.136     -1.97   4.93e- 2    0.450     0.999 "*"  
+5 ran_pars ea    sd__(Intercept)    0.269   NA         NA     NA          NA        NA     ""   </code></pre>
+</div>
 </div>
 <div class="cell">
 
@@ -4654,7 +5003,7 @@ max values  :  1.5658769,  0.8569690,  0.6566302,  1.6017437,  3.1202732,  1.875
         hideCursorTime: 5000,
 
         // Opens links in an iframe preview overlay
-        previewLinks: false,
+        previewLinks: true,
 
         // Transition style (none/fade/slide/convex/concave/zoom)
         transition: 'none',
