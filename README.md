@@ -22,3 +22,9 @@ Setup:
       - **Windows:** In the RStudio console, type `install.packages("Rtools")`. All three tools will be installed automatically.
       - **MacOS** Follow [these instructions](https://r-spatial.github.io/sf/index.html#macos) to install [GDAL](http://www.gdal.org/) using [Homebrew](https://brew.sh/), and then continue the instructions for installing `sf` and `rgdal` in R. ([GEOS](https://libgeos.org/) and [PRØJ](http://proj.org/) will be installed automatically).
       - **Linux** Follow the appropriate instructions for your Linux distribution [shown here](https://r-spatial.github.io/sf/index.html#linux)
+
+# Slides and Source Code
+
+[Click here for slides]() shown in the workshop (built with [Quarto and Revealjs](https://quarto.org/docs/presentations/revealjs/))
+
+Source code is included in the file `analysis.Rmd`
