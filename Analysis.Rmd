@@ -30,8 +30,8 @@ library(broom.mixed)
 
 ```{r}
 pma <- read_ipums_micro(
-  ddi = "local/data/pma_00136.xml", # Use your own file name here 
-  data = "local/data/pma_00136.dat.gz" # Use your own file name here 
+  ddi = "data/pma_00136.xml", # Use your own file name here 
+  data = "data/pma_00136.dat.gz" # Use your own file name here 
 )
 
 pma

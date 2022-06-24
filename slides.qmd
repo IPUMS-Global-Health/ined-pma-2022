@@ -121,12 +121,20 @@ library(broom.mixed)
 ## Load IPUMS PMA data into R
 
 ::: {.fragment}
-```{r, results='hide'}
+```{r, eval=FALSE}
+pma <- read_ipums_micro(
+  ddi = "data/pma_00136.xml", # Use your own file name here 
+  data = "data/pma_00136.dat.gz" # Use your own file name here 
+)
+```
+
+```{r, results='hide', echo = FALSE}
 pma <- read_ipums_micro(
   ddi = "local/data/pma_00136.xml", # Use your own file name here 
   data = "local/data/pma_00136.dat.gz" # Use your own file name here 
 )
 ```
+
 :::
 ::: {.fragment}
 ```{r, echo = FALSE}
@@ -170,10 +178,10 @@ pma <- pma %>% filter(RESULTFQ_1 == 1 & RESULTFQ_2 == 1)
 ::: {.columns}
 :::: {.column width="60%"}
 ::::: {.fragment .fade-in-then-semi-out}
-PMA uses a multi-stage **cluster sample** design. 
+PMA uses spatially referenced sample clusters - called "enumeration areas" (EAs) - sampled by probability proportional to population size.
 :::::
 ::::: {.fragment .fade-in-then-semi-out}
-At the beginning of the panel study, 35 households were randomly selected within each cluster or "enumeration area" (EA).
+At the beginning of the panel study, 35 households were randomly selected within each EA.
 :::::
 ::::
 :::: {.column width="40%"}
@@ -185,12 +193,12 @@ At the beginning of the panel study, 35 households were randomly selected within
 ::: {.columns}
 :::: {.column width="60%"}
 <div style="opacity:0.5">
-PMA uses a multi-stage **cluster sample** design. 
+PMA uses spatially referenced sample clusters - called "enumeration areas" (EAs) - sampled by probability proportional to population size.
 
-At the beginning of the panel study, 35 households were randomly selected within each cluster or "enumeration area" (EA).
+At the beginning of the panel study, 35 households were randomly selected within each EA.
 </div>
 ::::: {.fragment .fade-in-then-semi-out}
-IPUMS PMA does not disseminate the GPS coordinates for EAs, but you may [apply here]() for access directly from PMA.
+IPUMS PMA does not disseminate the GPS coordinates for EAs, but you may [apply here](https://www.pmadata.org/data/request-access-datasets) for access directly from PMA.
 :::::
 ::::: {.fragment .fade-in-then-semi-out}
 Today, we'll be using **falsified** GPS coordinates as an example. 
@@ -206,9 +214,9 @@ Today, we'll be using **falsified** GPS coordinates as an example.
 ::: {.columns}
 :::: {.column width="60%"}
 <div style="opacity:0.5">
-PMA uses a multi-stage **cluster sample** design. 
+PMA uses spatially referenced sample clusters - called "enumeration areas" (EAs) - sampled by probability proportional to population size.
 
-At the beginning of the panel study, 35 households were randomly selected within each cluster or "enumeration area" (EA).
+At the beginning of the panel study, 35 households were randomly selected within each EA.
 
 IPUMS PMA does not disseminate the GPS coordinates for EAs, but you may [apply here]() for access directly from PMA.
 </div>
@@ -226,9 +234,9 @@ Today, we'll be using **falsified** GPS coordinates as an example.
 ::: {.columns}
 :::: {.column width="60%"}
 <div style="opacity:0.5">
-PMA uses a multi-stage **cluster sample** design. 
+PMA uses spatially referenced sample clusters - called "enumeration areas" (EAs) - sampled by probability proportional to population size.
 
-At the beginning of the panel study, 35 households were randomly selected within each cluster or "enumeration area" (EA).
+At the beginning of the panel study, 35 households were randomly selected within each EA.
 
 IPUMS PMA does not disseminate the GPS coordinates for EAs, but you may [apply here]() for access directly from PMA.
 
@@ -315,6 +323,240 @@ gps
 ![](images/hex/sf.png){.absolute right=0  top=90 height="200"}
 ::::
 :::
+
+
+
+
+## Mapping GPS coordinates 
+
+::: {.fragment}
+```{r, eval=FALSE}
+ggplot() + 
+  layer_spatial(gps) + 
+  theme_minimal() 
+```
+:::
+::: {.fragment}
+```{r, echo=FALSE}
+ggplot() + 
+  layer_spatial(gps) + 
+  theme_minimal() 
+```
+:::
+
+
+
+
+## Adding a Shapefile
+
+::: {.fragment}
+We want to add a shapefile so we can see where each point lies on a map of Burkina Faso.
+:::
+::: {.fragment}
+You only need to specify the folder: R will locate the appropriate file.
+
+```{r, results='hide'}
+shape <- st_read("data/geobf") %>% select(ADMIN_NAME)
+```
+:::
+::: {.fragment}
+```{r, echo=FALSE}
+shape
+```
+:::
+
+
+
+
+## Mapping GPS coordinates with a Shapefile 
+
+::: {.fragment}
+```{r, eval=FALSE, `code-line-numbers` = "3"}
+ggplot() + 
+  layer_spatial(gps) + 
+  layer_spatial(shape, alpha = 0) + 
+  theme_minimal() 
+```
+:::
+::: {.fragment}
+```{r, echo=FALSE, fig.height=4, fig.align='center'}
+ggplot() + 
+  layer_spatial(gps) + 
+  layer_spatial(shape, alpha = 0) + 
+  theme_minimal() 
+```
+:::
+
+
+
+
+## PMA displacement protocol
+
+::: {.fragment}
+In fact, these GPS coordinates are *not* the actual centroid of each EA.
+:::
+::: {.fragment}
+:::: {style="text-align: center; margin-top: 1em"}
+![](images/displacement.png){height="400"}
+::::
+
+In order to preserve confidentiality, PMA displaces the centroid location of each EA up to 2 km (urban areas) or 5 km (rural areas). 
+
+Displacement does not cross admin 1 boundaries.
+:::
+
+
+
+
+## Meters on a Round Planet
+
+::: {.columns}
+:::: {.column width="50%"}
+::::: {.fragment}
+Remember: the `geometry` of our `gps` data is defined by arc-degrees, not meters.
+:::::
+::::: {.fragment}
+<span style='color: #98579B'>If we tried to account displacement in meters without "flattening" our map, the length of one meter would change as you travel away from the equator. </span>
+:::::
+::::
+:::: {.column width=50%}
+![](images/projection.gif){.absolute top=100 right=100 height=500}
+::::
+:::
+
+
+
+
+## Projection to Meters 
+
+::: {.fragment}
+We'll use [EPSG code 32630](https://epsg.io/32630) to focus our flat projection around Burkina Faso.
+:::
+::: {.fragment}
+```{r}
+gps <- gps %>% st_transform(crs = 32630)
+shape <- shape %>% st_transform(crs = 32630)
+```
+:::
+::: {.fragment}
+```{r echo=FALSE}
+gps
+```
+:::
+::: {.fragment}
+This changes the `geometry` column to meters `[m]`.
+:::
+
+
+
+
+## Creating Buffers 
+
+::: {.fragment}
+To keep things simple in our example, we'll give every EA a 5 km buffer.
+::: 
+::: {.fragment}
+```{r, results='hide'}
+gps_buffer <- gps %>% st_buffer(5000)
+```
+:::
+::: {.fragment}
+```{r echo=FALSE}
+gps_buffer
+```
+:::
+::: {.fragment}
+Now, `geometry` contains several points on the circumference of a round polygon.
+:::
+
+
+
+
+## Intersecting Regional Boundaries {auto-animate="true"}
+
+::: {.columns}
+:::: {.column width="40%"}
+::::: {.fragment}
+In certain cases, a buffer may cross an admin 1 boundary in `shape`. 
+:::::
+::::: {.fragment}
+For example, we'll look at enumeration area `854131009`
+
+```{r}
+test_ea <- 854131009 
+```
+:::::
+::::
+:::: {.column width="60%"}
+::::: {.fragment}
+```{r, echo = FALSE, fig.height=4, fig.width=4, fig.align='center'}
+ggplot() + 
+  layer_spatial(gps_buffer %>% filter(EAID == test_ea), alpha = 0) + 
+  layer_spatial(gps %>% filter(EAID == test_ea), color = "red") + 
+  annotation_spatial(shape, alpha = 0) + 
+  theme_minimal()
+```
+:::::
+::::
+:::: {.fragment}
+Technically, we should only keep the segment containing the original centroid.
+
+```{r}
+gps_buffer <- gps_buffer %>% 
+  st_intersection(shape) %>% 
+  st_filter(gps)
+```
+::::
+:::
+
+## Intersecting Regional Boundaries {auto-animate="true" visibility="uncounted"}
+
+::: {.columns}
+:::: {.column width="40%"}
+In certain cases, a buffer may cross an admin 1 boundary in `shape`. 
+
+For example, we'll look at enumeration area `854131009`
+
+```{r, eval = FALSE}
+test_ea <- 854131009 
+```
+::::
+:::: {.column width="60%"}
+```{r, echo = FALSE, fig.height=4, fig.width=4, fig.align='center'}
+ggplot() + 
+  layer_spatial(gps_buffer %>% filter(EAID == test_ea), alpha = 0) + 
+  layer_spatial(gps %>% filter(EAID == test_ea), color = "red") + 
+  annotation_spatial(shape, alpha = 0) + 
+  theme_minimal()
+```
+::::
+Technically, we should only keep the segment containing the original centroid.
+
+```{r, eval = FALSE}
+gps_buffer <- gps_buffer %>% 
+  st_intersection(shape) %>% 
+  st_filter(gps)
+```
+:::
+
+
+
+
+## Back to arc-degrees
+
+:::: {.fragment}
+Finally, we can return to our original CRS defined by arc-degrees. 
+:::: 
+:::: {.fragment}
+```{r,  fig.height=4, fig.align='center'}
+gps_buffer <- gps_buffer %>% st_transform(crs = 4326)
+shape <- shape %>% st_transform(crs = 4326)
+ggplot() + 
+  layer_spatial(shape, alpha = 0) + 
+  layer_spatial(gps_buffer, alpha = 0) + 
+  theme_minimal()
+```
+:::: 
 
 
 
@@ -419,16 +661,21 @@ ea_summary
 ## Merging GPS data 
 
 ::: {.fragment}
-Use `full_join` to merge all rows of `ea_summary` to `gps`. 
+Use `full_join` to merge all rows of `ea_summary` to `gps_buffer`. 
 
-If you list `gps` *first*, the result will be another Simple Features object.
+If you list `gps_buffer` *first*, the result will be another Simple Features object.
 
 ```{r}
-ea_summary_gps <- full_join(gps %>% select(ea = EAID), ea_summary, by = "ea")
+ea_summary_gps <- full_join(
+  gps_buffer %>% select(ea = EAID), 
+  ea_summary, 
+  by = "ea"
+)
 ```
 :::
 ::: {.fragment}
 ```{r, echo = FALSE}
+ea_summary_gps <- ea_summary_gps %>% relocate(geometry, .after = everything())
 ea_summary_gps
 ```
 :::
@@ -436,52 +683,14 @@ ea_summary_gps
 
 
 
-## Mapping births by EA
+## Mapping Birth Outcomes by EA
 
-::: {.fragment}
-```{r, fig.align='center'}
+```{r, fig.height=4, fig.align='center'}
 ggplot() + 
-  layer_spatial(ea_summary_gps, aes(shape = many_births, color = many_births)) + 
+  layer_spatial(ea_summary_gps, aes(fill = many_births)) + 
+  layer_spatial(shape, alpha = 0) + 
   theme_minimal()
 ```
-:::
-
-
-
-
-## Adding a Shapefile
-
-You only need to specify the folder: R will locate the appropriate file.
-
-```{r, results='hide'}
-shape <- st_read("data/geobf") %>% select(ADMIN_NAME)
-```
-
-```{r, echo=FALSE}
-shape
-```
-
-
-
-
-## Mapping births by EA {auto-animate=true}
-
-```{r, fig.align='center'}
-ggplot() + 
-  layer_spatial(ea_summary_gps, aes(shape = many_births, color = many_births)) + 
-  theme_minimal()
-```
-
-## Mapping births by EA {auto-animate="true" visibility="uncounted"}
-
-```{r, fig.align='center', `code-line-numbers` = "3"}
-ggplot() + 
-  layer_spatial(ea_summary_gps, aes(shape = many_births, color = many_births)) + 
-  layer_spatial(shape, alpha = 0) + # `alpha` controls transparency 
-  theme_minimal()
-```
-
-
 
 
 
@@ -618,6 +827,7 @@ years <- set_names(years, 1981:2020)
 ::: {.fragment}
 ```{r, echo = FALSE}
 years
+rm(years)
 ```
 :::
 
@@ -692,6 +902,9 @@ chirps_seasonal_sum <- map(years, ~.x %>% sum)
 
 chirps_seasonal_sum
 ```
+```{r, echo=FALSE}
+rm(years)
+```
 :::
 
 
@@ -727,7 +940,7 @@ To answer this question, we'll compare total seasonal accumulation in 2020 to th
 Here is the *average* seasonal rainfall accumulation for each pixel (across all years):
 
 ```{r}
-chrips_avg <- mean(chirps_seasonal_sum)
+chirps_avg <- mean(chirps_seasonal_sum)
 ```
 :::
 :::{.fragment}
@@ -741,12 +954,16 @@ chirps_sd <- stdev(chirps_seasonal_sum)
 Finally we can use both to compute a Z-score for each pixel in each year. 
 
 ```{r}
-chirps_z <- (chirps_seasonal_sum - chrips_avg) / chirps_sd
+chirps_z <- (chirps_seasonal_sum - chirps_avg) / chirps_sd
 ```
 :::
 :::{.fragment}
 ```{r, echo=FALSE}
 chirps_z
+rm(chirps_sd)
+rm(chirps_avg)
+rm(chirps_seasonal_sum)
+rm(june5_2020)
 ```
 :::
 
@@ -775,193 +992,14 @@ ggplot() +
 
 
 
-## PMA displacement protocol
-
-::: {style="text-align: center; margin-top: 1em"}
-![](images/displacement.png){height="400"}
-:::
-
-In order to preserve confidentiality, PMA displaces the centroid location of each EA up to 2 km (urban areas) or 5 km (rural areas). 
-
-Displacement does not cross admin 1 boundaries.
-
-
-
-
-## From Points to Buffers
-
-::: {.fragment}
-Remember: our GPS data contain discrete points. 
-:::
-::: {.fragment}
-```{r, echo = F} 
-ea_summary_gps
-```
-:::
-::: {.fragment}
-We should use all of the available climate data for the complete **buffer zones**, which may span multiple pixels in our raster!
-:::
-
-
-
-
-## Meters on a Round Planet
-
-::: {.columns}
-:::: {.column width="60%"}
-::::: {.fragment}
-First we need to change the `geometry` of our data from arc-degrees to linear meters.
-
-```{r, echo = FALSE}
-ea_summary_gps
-```
-:::::
-::::: {.fragment}
-<span style='color: #98579B'>Failure to do so would mean that the length of 2000 or 5000 meters would differ as you travel away from the equator. </span>
-:::::
-::::
-:::: {.column width=40%}
-![](images/projection.gif){.absolute top=100 right=0 height=500}
-::::
-:::
-
-
-
-
-## Projection to Meters 
-
-::: {.fragment}
-We'll use [EPSG code 32630](https://epsg.io/32630) to focus our new projection around Burkina Faso.
-:::
-::: {.fragment}
-```{r}
-ea_summary_gps <- ea_summary_gps %>% st_transform(crs = 32630)
-shape <- shape %>% st_transform(crs = 32630)
-```
-:::
-::: {.fragment}
-```{r echo=FALSE}
-ea_summary_gps
-```
-:::
-
-
-
-
-## Creating Buffers 
-
-::: {.fragment}
-Draw a 2000 meter urban buffer, or a 5000 meter rural buffer around each centroid.
-::: 
-::: {.fragment}
-```{r, results='hide'}
-ea_summary_buffer <- ea_summary_gps %>% st_buffer(if_else(.$urban, 2000, 5000))
-```
-:::
-::: {.fragment}
-```{r echo=FALSE}
-ea_summary_buffer
-```
-:::
-
-
-
-
-## Intersecting Regional Boundaries {auto-animate="true"}
-
-::: {.columns}
-:::: {.column width="40%"}
-::::: {.fragment}
-In certain cases, a buffer may cross an admin 1 boundary in `shape`. 
-:::::
-::::: {.fragment}
-For example, we'll look at enumeration area `854131009`
-
-```{r}
-test_ea <- 854131009 
-```
-:::::
-::::
-:::: {.column width="60%"}
-::::: {.fragment}
-```{r, echo = FALSE}
-ggplot() + 
-  layer_spatial(ea_summary_buffer %>% filter(ea == test_ea), alpha = 0) + 
-  layer_spatial(ea_summary_gps %>% filter(ea == test_ea), color = "red") + 
-  annotation_spatial(shape, alpha = 0) + 
-  theme_minimal()
-```
-:::::
-::::
-:::: {.fragment}
-We should only keep the segment containing the original centroid.
-
-```{r}
-ea_summary_buffer <- ea_summary_buffer %>% 
-  st_intersection(shape) %>% 
-  st_filter(ea_summary_gps)
-```
-::::
-:::
-
-## Intersecting Regional Boundaries {auto-animate="true" visibility="uncounted"}
-
-::: {.columns}
-:::: {.column width="40%"}
-In certain cases, a buffer may cross an admin 1 boundary in `shape`. 
-
-For example, we'll look at enumeration area `854131009`
-
-```{r, eval = FALSE}
-test_ea <- 854131009 
-```
-::::
-:::: {.column width="60%"}
-```{r, echo = FALSE}
-ggplot() + 
-  layer_spatial(ea_summary_buffer %>% filter(ea == test_ea), alpha = 0) + 
-  layer_spatial(ea_summary_gps %>% filter(ea == test_ea), color = "red") + 
-  annotation_spatial(shape, alpha = 0) + 
-  theme_minimal()
-```
-::::
-We should only keep the segment containing the original centroid.
-
-```{r, eval = FALSE}
-ea_summary_buffer <- ea_summary_buffer %>% 
-  st_intersection(shape) %>% 
-  st_filter(ea_summary_gps)
-```
-:::
-
-
-## Back to arc-degrees
-
-:::: {.fragment}
-Finally, we can return to our original CRS. 
-:::: 
-:::: {.fragment}
-```{r}
-ea_summary_buffer <- ea_summary_buffer %>% st_transform(crs = 4326)
-shape <- shape %>% st_transform(crs = 4326)
-ggplot() + 
-  layer_spatial(shape, alpha = 0) + 
-  layer_spatial(ea_summary_buffer, aes(fill = many_births), color = 0) + 
-  theme_minimal()
-```
-:::: 
-
-
-
-
 ## Spatially Weighted Averages
 
 ::: {.columns}
 :::: {.column width=60%"}
-Our example EA overlaps 6 CHIRPS pixels
+Remember our example EA? It overlaps 8 CHIRPS pixels.
 
 ```{r, results='hide'}
-test_buffer <- ea_summary_buffer %>% 
+test_buffer <- ea_summary_gps %>% 
   filter(ea == test_ea)
 ```
 ```{r, eval = FALSE}
@@ -994,7 +1032,7 @@ ggplot() +
 ::: {.columns}
 :::: {.column width=60%"}
 ::::: {.fragment}
-We want a spatial average of these 6 pixels, where the "weight" is the proportion of the pixel included in the buffer zone.
+We want a spatial average of these 8 pixels, where the "weight" is the proportion of the pixel included in the buffer zone.
 :::::
 ::::: {.fragment}
 ```{r}
@@ -1034,12 +1072,12 @@ ggplot() +
 Link by row ID
 
 ```{r}
-ea_summary_buffer <- ea_summary_buffer %>% rowid_to_column("ID")
+ea_summary_gps <- ea_summary_gps %>% rowid_to_column("ID")
 ```
 :::
 ::: {.fragment}
 ```{r, echo=FALSE}
-ea_summary_buffer
+ea_summary_gps
 ```
 :::
 
@@ -1050,7 +1088,7 @@ Calculate one z-score per row ID
 
 ```{r}
 ea_summary_z <- chirps_z$`2020` %>% 
-  extract(vect(ea_summary_buffer), weights = TRUE) %>% 
+  extract(vect(ea_summary_gps), weights = TRUE) %>% 
   tibble() %>% 
   group_by(ID) %>% 
   summarise(z = weighted.mean(`2020`, weight)) 
@@ -1067,7 +1105,7 @@ ea_summary_z
 ... and join z-scores back with the `ea` codes for each enumeration area
 
 ```{r}
-ea_summary_z <- ea_summary_buffer %>% 
+ea_summary_z <- ea_summary_gps %>% 
   st_drop_geometry() %>% 
   select(ID, ea) %>% 
   full_join(ea_summary_z, by = "ID")
@@ -1076,6 +1114,7 @@ ea_summary_z <- ea_summary_buffer %>%
 ::: {.fragment}
 ```{r, echo=FALSE}
 ea_summary_z
+rm(chirps_z)
 ```
 :::
 
