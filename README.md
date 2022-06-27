@@ -16,11 +16,12 @@ Setup:
       - **MacOS** Follow [these instructions](https://r-spatial.github.io/sf/index.html#macos) to install [GDAL](http://www.gdal.org/) using [Homebrew](https://brew.sh/), and then continue the instructions for installing `sf` and `rgdal` in R. ([GEOS](https://libgeos.org/) and [PRØJ](http://proj.org/) will be installed automatically).
       - **Linux** Follow the appropriate instructions for your Linux distribution [shown here](https://r-spatial.github.io/sf/index.html#linux).
   3. [Register to use IPUMS PMA data](https://pma.ipums.org/pma/register.shtml).
-      - :arrow_double_down:	you will need to be registered in order to **download** data during the workshop.
+      - :bar_chart:	you will need to be registered in order to **download data** during the workshop.
   4. Clone this repository, or simply [click here to download](https://github.com/matt-gunther/ined-pma-2022/archive/refs/heads/main.zip).
   5. Once downloaded, open the file `ined-pma-2022.Rproj`.
       - :rocket: this will open RStudio in a new project environment.
-  6. Copy the following code into the `Console` in RStudio, then press `Enter`:
+  6. Copy the following code into the `Console` in RStudio, then press `Enter`.
+      - :hourglass: it may take several minutes to install the packages needed for this workshop!
   
  ```
 # Install any necessary packages if not already installed 
