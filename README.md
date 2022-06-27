@@ -27,7 +27,7 @@ Setup:
 
 for(
   pkg in c(
-    "tidyverse", "ipumsr", "sf", "terra", "ggspatial",
+    "tidyverse", "ipumsr", "sf", "terra", "ggspatial", "gtools",
     "srvyr", "survey", "lme4", "broom.mixed", "broom", "remotes"
   )
 ){if(!require(pkg, quietly = TRUE, character.only = TRUE)){install.packages(pkg)}}
