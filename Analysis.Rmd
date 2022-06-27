@@ -10,7 +10,7 @@ date: '2022-07-06'
 # Installs any necessary packages if not already installed 
 for(
   pkg in c(
-    "tidyverse", "ipumsr", "sf", "terra", "ggspatial",
+    "tidyverse", "ipumsr", "sf", "terra", "ggspatial", "gtools",
     "srvyr", "survey", "lme4", "broom.mixed", "broom", "remotes"
   )
 ){
