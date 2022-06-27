@@ -6,7 +6,28 @@ date: '2022-07-06'
 
 # Setup 
 
-```{r}
+```{r, results='hide'}
+# Installs any necessary packages if not already installed 
+for(
+  pkg in c(
+    "tidyverse", "ipumsr", "sf", "terra", "ggspatial",
+    "srvyr", "survey", "lme4", "broom.mixed", "broom", "remotes"
+  )
+){
+  if(!require(pkg, quietly = TRUE, character.only = TRUE)){
+    install.packages(pkg)
+  }
+}
+
+# Installs a development version that plots raster data from `terra`
+# See https://github.com/paleolimbot/ggspatial/
+if(packageVersion("ggspatial") != '1.1.5.9000'){
+  remotes::install_local("cellar/ggspatial_1.1.5.9000.tar.gz")
+}
+```
+
+
+```{r, results='hide'}
 # IPUMS & Spatial Data Tools
 library(tidyverse)
 library(ipumsr) 
@@ -15,25 +36,28 @@ library(terra)
 library(ggspatial)
 ```
 
-```{r}
+```{r, results='hide'}
 # Analysis Tools 
 library(srvyr)
 library(survey)
 library(lme4)
-library(broom)
 library(broom.mixed)
+library(broom)
 ```
+
 
 # 1 - IPUMS PMA Data 
 
 ## Load IPUMS PMA data into R
 
-```{r}
+```{r, results='hide'}
 pma <- read_ipums_micro(
-  ddi = "data/pma_00136.xml", # Use your own file name here 
-  data = "data/pma_00136.dat.gz" # Use your own file name here 
+  ddi = "local/data/pma_00136.xml", # Use your own file name here 
+  data = "local/data/pma_00136.dat.gz" # Use your own file name here 
 )
+```
 
+```{r}
 pma
 ```
 
@@ -44,6 +68,7 @@ pma %>% count(RESULTFQ_1, RESULTFQ_2)
 
 pma <- pma %>% filter(RESULTFQ_1 == 1 & RESULTFQ_2 == 1)
 ```
+
 
 # 2- GPS data 
 
@@ -66,6 +91,78 @@ gps <- gps %>%
 
 gps
 ```
+
+## Mapping GPS coordinates 
+
+```{r}
+ggplot() + 
+  layer_spatial(gps) + 
+  theme_minimal() 
+```
+
+## Adding a Shapefile
+
+```{r}
+shape <- st_read("data/geobf") %>% select(ADMIN_NAME)
+
+shape
+```
+
+## Mapping GPS coordinates with a Shapefile 
+
+```{r}
+ggplot() + 
+  layer_spatial(gps) + 
+  layer_spatial(shape, alpha = 0) + 
+  theme_minimal() 
+```
+
+## Projection to Meters 
+
+```{r}
+gps <- gps %>% st_transform(crs = 32630)
+shape <- shape %>% st_transform(crs = 32630)
+```
+
+## Creating Buffers 
+
+```{r, results='hide'}
+gps_buffer <- gps %>% st_buffer(5000)
+```
+
+## Intersecting Regional Boundaries
+
+```{r}
+test_ea <- 854131009 
+
+ggplot() + 
+  layer_spatial(gps_buffer %>% filter(EAID == test_ea), alpha = 0) + 
+  layer_spatial(gps %>% filter(EAID == test_ea), color = "red") + 
+  annotation_spatial(shape, alpha = 0) + 
+  theme_minimal()
+
+gps_buffer <- gps_buffer %>% 
+  st_intersection(shape) %>% 
+  st_filter(gps)
+
+ggplot() + 
+  layer_spatial(gps_buffer %>% filter(EAID == test_ea), alpha = 0) + 
+  layer_spatial(gps %>% filter(EAID == test_ea), color = "red") + 
+  annotation_spatial(shape, alpha = 0) + 
+  theme_minimal()
+```
+
+## Back to arc-degrees
+
+```{r}
+gps_buffer <- gps_buffer %>% st_transform(crs = 4326)
+shape <- shape %>% st_transform(crs = 4326)
+ggplot() + 
+  layer_spatial(shape, alpha = 0) + 
+  layer_spatial(gps_buffer, alpha = 0) + 
+  theme_minimal()
+```
+
 
 # 3 - Mapping Birth Outcomes
 
@@ -96,7 +193,11 @@ ea_summary
 ## Merging GPS data 
 
 ```{r}
-ea_summary_gps <- full_join(gps %>% select(ea = EAID), ea_summary, by = "ea")
+ea_summary_gps <- full_join(
+  gps_buffer %>% select(ea = EAID), 
+  ea_summary, 
+  by = "ea"
+)
 
 ea_summary_gps
 ```
@@ -105,26 +206,11 @@ ea_summary_gps
 
 ```{r, fig.align='center'}
 ggplot() + 
-  layer_spatial(ea_summary_gps, aes(shape = many_births, color = many_births)) + 
+  layer_spatial(ea_summary_gps, aes(fill = many_births)) + 
+  layer_spatial(shape, alpha = 0) + 
   theme_minimal()
 ```
 
-## Adding a Shapefile
-
-```{r, results='hide'}
-shape <- st_read("data/geobf") %>% select(ADMIN_NAME)
-
-shape
-```
-
-## Mapping births by EA
-
-```{r, fig.align='center', `code-line-numbers` = "3"}
-ggplot() + 
-  layer_spatial(ea_summary_gps, aes(shape = many_births, color = many_births)) + 
-  layer_spatial(shape, alpha = 0) + # `alpha` controls transparency 
-  theme_minimal()
-```
 
 # 4 - CHIRPS: Annual rainfall summary 
 
@@ -218,63 +304,14 @@ ggplot() +
   labs(fill = "Z-score (1981-2020)")
 ```
 
+
 # 5 - Bringing it All Together 
-
-## From Points to Buffers
-
-```{r, echo = F} 
-ea_summary_gps
-```
-
-## Projection to Meters 
-
-```{r}
-ea_summary_gps <- ea_summary_gps %>% st_transform(crs = 32630)
-ea_summary_gps
-
-shape <- shape %>% st_transform(crs = 32630)
-shape
-```
-
-## Creating Buffers 
-
-```{r, results='hide'}
-ea_summary_buffer <- ea_summary_gps %>% st_buffer(if_else(.$urban, 2000, 5000))
-
-ea_summary_buffer
-```
-
-## Intersecting Regional Boundaries
-
-```{r}
-test_ea <- 854131009 
-
-ea_summary_buffer <- ea_summary_buffer %>% 
-  st_intersection(shape) %>% 
-  st_filter(ea_summary_gps)
-
-ggplot() + 
-  layer_spatial(ea_summary_buffer %>% filter(ea == test_ea), alpha = 0) + 
-  layer_spatial(ea_summary_gps %>% filter(ea == test_ea), color = "red") + 
-  annotation_spatial(shape, alpha = 0) + 
-  theme_minimal()
-```
-
-## Back to arc-degrees
-
-```{r}
-ea_summary_buffer <- ea_summary_buffer %>% st_transform(crs = 4326)
-shape <- shape %>% st_transform(crs = 4326)
-ggplot() + 
-  layer_spatial(shape, alpha = 0) + 
-  layer_spatial(ea_summary_buffer, aes(fill = many_births), color = 0) + 
-  theme_minimal()
-```
 
 ## Spatially Weighted Averages
 
 ```{r}
-test_buffer <- ea_summary_buffer %>% filter(ea == test_ea)
+test_buffer <- ea_summary_gps %>% 
+  filter(ea == test_ea)
 
 ggplot() + 
   layer_spatial(
@@ -291,33 +328,30 @@ ggplot() +
 test_z <- chirps_z$`2020` %>%
   extract(vect(test_buffer), weights = TRUE)
 
-test_z
-
-test_z %>% summarise(
-  wtd_mean = weighted.mean(`2020`, weight)
-)
+test_z %>% summarise(wtd_mean = weighted.mean(`2020`, weight))
 ```
 
 ## Enumeration Area Z-scores
 
 ```{r}
-ea_summary_buffer <- ea_summary_buffer %>% rowid_to_column("ID")
+ea_summary_gps <- ea_summary_gps %>% rowid_to_column("ID")
 
 ea_summary_z <- chirps_z$`2020` %>% 
-  extract(vect(ea_summary_buffer), weights = TRUE) %>% 
+  extract(vect(ea_summary_gps), weights = TRUE) %>% 
   tibble() %>% 
   group_by(ID) %>% 
   summarise(z = weighted.mean(`2020`, weight)) 
 
 ea_summary_z
 
-ea_summary_z <- ea_summary_buffer %>% 
+ea_summary_z <- ea_summary_gps %>% 
   st_drop_geometry() %>% 
   select(ID, ea) %>% 
   full_join(ea_summary_z, by = "ID")
 
 ea_summary_z
 ```
+
 
 # 6 - Analysis
 
