@@ -9,7 +9,7 @@
 <link href="slides_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-0.9.592">
 
-  <title>quarto-input2ac7e1d4</title>
+  <title>quarto-inputd819dae1</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -401,22 +401,22 @@ Data Analysis Workshop
 <section id="data-and-research-question" class="slide level2 center">
 <h2>Data and Research Question</h2>
 <div class="columns">
-<div class="column" style="width:60%;">
+<div class="column" style="width:50%;">
 <div class="fragment fade-in-then-semi-out">
 <p>IPUMS PMA: Fertility outcomes for women in Burkina Faso</p>
 </div>
 <div class="fragment fade-in-then-semi-out">
-<p>GPS coordinates for each PMA sample cluster</p>
+<p>Toy GPS data: coordinates for each PMA sample cluster</p>
 </div>
 <div class="fragment fade-in-then-semi-out">
-<p>CHIRPS: Cumulative seasonal rainfall accumulation for each PMA sample cluster</p>
+<p>CHIRPS: Rainfall accumulation relative to local averages</p>
 </div>
 <div class="fragment fade-in">
 <p style="color: #98579B">
 Do rainfall conditions influence women’s short-term family planning decisions?
 </p>
 </div>
-</div><div class="column" style="width:40%;">
+</div><div class="column" style="width:50%;">
 <p><img data-src="images/goals.png" class="absolute" style="height: 400px; "></p>
 </div>
 </div>
@@ -426,7 +426,7 @@ Do rainfall conditions influence women’s short-term family planning decisions?
 <div class="cell">
 
 </div>
-<p>Follow <a href="">these steps</a> to obtain today’s code &amp; publicly available data</p>
+<p>Follow <a href="https://github.com/matt-gunther/ined-pma-2022">these steps</a> to obtain today’s code &amp; publicly available data</p>
 <p>Copy the following code chunks into R to load required packages<br> (Hint: click the clipboard icon inside each chunk to “copy all”)</p>
 <div class="columns">
 <div class="column" style="width:48%;">
@@ -458,15 +458,35 @@ Do rainfall conditions influence women’s short-term family planning decisions?
 <h1>1 - IPUMS PMA Data</h1>
 
 </section>
-<section id="downloading-ipums-pma-data" class="slide level2">
+<section id="downloading-ipums-pma-data" class="slide level2 center nonincremental">
 <h2>Downloading IPUMS PMA data</h2>
-<div style="text-align: center; margin-top: 1em">
-<p><img data-src="images/pma/home.png" height="500"></p>
-<p><a href="https://pma.ipums.org/pma/">Download a data extract from IPUMS PMA</a></p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><img data-src="images/pma/home.png"></p>
+</div><div class="column" style="width:50%;">
+<p><a href="https://pma.ipums.org/pma/">Visit the IPUMS PMA data website</a></p>
+<ul>
+<li class="fragment">Sample
+<ul>
+<li class="fragment">Burkina Faso</li>
+<li class="fragment">Longitudinal</li>
+<li class="fragment">Female Respondents Only</li>
+</ul></li>
+<li class="fragment">Variables
+<ul>
+<li class="fragment">RESULTFQ</li>
+<li class="fragment">PANELBIRTH</li>
+<li class="fragment">PANELWEIGHT</li>
+<li class="fragment">EAID</li>
+<li class="fragment">URBAN</li>
+</ul></li>
+</ul>
+</div>
 </div>
 </section>
 <section id="load-ipums-pma-data-into-r" class="slide level2">
 <h2>Load IPUMS PMA data into R</h2>
+<p>You’ll receive two files from IPUMS - put both in the <code>data</code> folder where <code>analysis.Rmd</code> is located.</p>
 <div class="fragment">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>pma <span class="ot">&lt;-</span> <span class="fu">read_ipums_micro</span>(</span>
@@ -507,6 +527,7 @@ Do rainfall conditions influence women’s short-term family planning decisions?
 </section>
 <section id="data-format" class="slide level2">
 <h2>Data format</h2>
+<p>We’ve selected <code>wide</code> format longitudinal data, so Phase 1 and Phase 2 data are stored in separate columns.</p>
 <div class="fragment">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>pma <span class="sc">%&gt;%</span> <span class="fu">count</span>(RESULTFQ_1, RESULTFQ_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -537,15 +558,21 @@ Do rainfall conditions influence women’s short-term family planning decisions?
 </div>
 </div>
 <div class="fragment">
+<p>Keep only women who completed the survey in <em>both</em> phases of the panel study.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># Keep only panel members from both phases </span></span>
 <span id="cb7-2"><a href="#cb7-2"></a>pma <span class="ot">&lt;-</span> pma <span class="sc">%&gt;%</span> <span class="fu">filter</span>(RESULTFQ_1 <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span> RESULTFQ_2 <span class="sc">==</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </section></section>
+<section id="questions-about-ipums-pma-data" class="title-slide slide level1 center">
+<h1>Questions about IPUMS PMA data?</h1>
+
+</section>
+
 <section>
-<section id="gps-data" class="title-slide slide level1 center">
-<h1>2- GPS data</h1>
+<section id="pma-gps-data" class="title-slide slide level1 center">
+<h1>2- PMA GPS data</h1>
 
 </section>
 <section id="about-pma-gps-data" class="slide level2" data-auto-animate="true">
@@ -711,32 +738,15 @@ Geodetic CRS:  WGS 84
 </div>
 </div>
 </section>
-<section id="mapping-gps-coordinates" class="slide level2">
-<h2>Mapping GPS coordinates</h2>
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
-<span id="cb13-2"><a href="#cb13-2"></a>  <span class="fu">layer_spatial</span>(gps) <span class="sc">+</span> </span>
-<span id="cb13-3"><a href="#cb13-3"></a>  <span class="fu">theme_minimal</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<div class="fragment">
-<div class="cell">
-<div class="cell-output-display">
-<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-16-1.png" width="960"></p>
-</div>
-</div>
-</div>
-</section>
 <section id="adding-a-shapefile" class="slide level2">
 <h2>Adding a Shapefile</h2>
 <div class="fragment">
-<p>We want to add a shapefile so we can see where each point lies on a map of Burkina Faso.</p>
+<p>We need a supplementary <code>shape</code> file to see where each point lies on a map of Burkina Faso.</p>
 </div>
 <div class="fragment">
 <p>You only need to specify the folder: R will locate the appropriate file.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>shape <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/geobf"</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(ADMIN_NAME)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>shape <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/geobf"</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(ADMIN_NAME)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
@@ -763,28 +773,33 @@ First 10 features:
 </div>
 </div>
 </section>
-<section id="mapping-gps-coordinates-with-a-shapefile" class="slide level2">
-<h2>Mapping GPS coordinates with a Shapefile</h2>
+<section id="mapping-gps-coordinates" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Mapping GPS coordinates</h2>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
-<span id="cb16-2"><a href="#cb16-2"></a>  <span class="fu">layer_spatial</span>(gps) <span class="sc">+</span> </span>
-<span id="cb16-3"><a href="#cb16-3"></a>  <span class="fu">layer_spatial</span>(shape, <span class="at">alpha =</span> <span class="dv">0</span>) <span class="sc">+</span> </span>
-<span id="cb16-4"><a href="#cb16-4"></a>  <span class="fu">theme_minimal</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb15-1" class="hljs-ln-code"><a href="#cb15-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb15-2" class="hljs-ln-code"><a href="#cb15-2"></a>  <span class="fu">layer_spatial</span>(gps) <span class="sc">+</span> </span>
+<span id="cb15-3" class="hljs-ln-code"><a href="#cb15-3"></a>  <span class="fu">theme_minimal</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
-<div class="cell" data-layout-align="center">
+<div class="cell">
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-20-1.png" width="960"></p>
-</figure>
-</div>
+<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-18-1.png" width="960"></p>
 </div>
 </div>
 </div>
 </section>
+<section id="mapping-gps-coordinates-1" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Mapping GPS coordinates</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb16-1" class="hljs-ln-code"><a href="#cb16-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb16-2" class="hljs-ln-code"><a href="#cb16-2"></a>  <span class="fu">layer_spatial</span>(gps) <span class="sc">+</span> </span>
+<span id="cb16-3" class="hljs-ln-code"><a href="#cb16-3"></a>  <span class="fu">layer_spatial</span>(shape, <span class="at">alpha =</span> <span class="dv">0</span>) <span class="sc">+</span> </span>
+<span id="cb16-4" class="hljs-ln-code"><a href="#cb16-4"></a>  <span class="fu">theme_minimal</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+<img data-src="slides_files/figure-revealjs/unnamed-chunk-20-1.png" width="960" class="r-stretch quarto-figure-center"></section>
 <section id="pma-displacement-protocol" class="slide level2">
 <h2>PMA displacement protocol</h2>
 <div class="fragment">
@@ -798,20 +813,26 @@ First 10 features:
 <p>Displacement does not cross admin 1 boundaries.</p>
 </div>
 </section>
-<section id="meters-on-a-round-planet" class="slide level2">
-<h2>Meters on a Round Planet</h2>
+<section class="slide level2">
+
+<div style="display: flex; align-items: center; height: 90%">
 <div class="columns">
 <div class="column" style="width:50%;">
+<h2>
+Meters on a Round Plant
+</h2>
 <div class="fragment">
 <p>Remember: the <code>geometry</code> of our <code>gps</code> data is defined by arc-degrees, not meters.</p>
 </div>
 <div class="fragment">
-<p><span style="color: #98579B">If we tried to account displacement in meters without “flattening” our map, the length of one meter would change as you travel away from the equator. </span></p>
+<p><span style="color: #98579B">If we tried to account displacement in meters without “flattening” our map, the length of one meter vary based on distance from the equator.</span></p>
 </div>
 </div><div class="column" style="width:50%;">
-<p><img data-src="images/projection.gif" class="absolute" style="top: 100px; right: 100px; height: 500px; "></p>
+
 </div>
 </div>
+</div>
+<p><img data-src="images/projection.gif" class="absolute" style="top: 0px; right: 50px; height: 600px; "></p>
 </section>
 <section id="projection-to-meters" class="slide level2">
 <h2>Projection to Meters</h2>
@@ -892,8 +913,9 @@ Projected CRS: WGS 84 / UTM zone 30N
 <p>Now, <code>geometry</code> contains several points on the circumference of a round polygon.</p>
 </div>
 </section>
-<section id="intersecting-regional-boundaries" class="slide level2" data-auto-animate="true">
-<h2 data-id="quarto-animate-title">Intersecting Regional Boundaries</h2>
+<section id="intersecting-regional-boundaries" class="slide level2">
+<h2>Intersecting Regional Boundaries</h2>
+<div style="display: flex; align-items: center; height: 90%">
 <div class="columns">
 <div class="column" style="width:40%;">
 <div class="fragment">
@@ -917,24 +939,25 @@ Projected CRS: WGS 84 / UTM zone 30N
 </div>
 </div>
 </div>
-</div><div class="fragment">
-<p>Technically, we should only keep the segment containing the original centroid.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>gps_buffer <span class="ot">&lt;-</span> gps_buffer <span class="sc">%&gt;%</span> </span>
-<span id="cb22-2"><a href="#cb22-2"></a>  <span class="fu">st_intersection</span>(shape) <span class="sc">%&gt;%</span> </span>
-<span id="cb22-3"><a href="#cb22-3"></a>  <span class="fu">st_filter</span>(gps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </div>
 </section>
-<section id="intersecting-regional-boundaries-1" class="slide level2" data-auto-animate="true" data-visibility="uncounted">
-<h2 data-id="quarto-animate-title">Intersecting Regional Boundaries</h2>
+<section id="intersecting-regional-boundaries-1" class="slide level2">
+<h2>Intersecting Regional Boundaries</h2>
+<div style="display: flex; align-items: center; height: 90%">
 <div class="columns">
 <div class="column" style="width:40%;">
 <p>In certain cases, a buffer may cross an admin 1 boundary in <code>shape</code>.</p>
 <p>For example, we’ll look at enumeration area <code>854131009</code></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a>test_ea <span class="ot">&lt;-</span> <span class="dv">854131009</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>test_ea <span class="ot">&lt;-</span> <span class="dv">854131009</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Keep only the segment containing the original centroid.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a>gps_buffer <span class="ot">&lt;-</span> gps_buffer <span class="sc">%&gt;%</span> </span>
+<span id="cb23-2"><a href="#cb23-2"></a>  <span class="fu">st_intersection</span>(shape) <span class="sc">%&gt;%</span> </span>
+<span id="cb23-3"><a href="#cb23-3"></a>  <span class="fu">st_filter</span>(gps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div><div class="column" style="width:60%;">
 <div class="cell" data-layout-align="center">
@@ -946,10 +969,37 @@ Projected CRS: WGS 84 / UTM zone 30N
 </div>
 </div>
 </div>
-</div><p>Technically, we should only keep the segment containing the original centroid.</p><div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>gps_buffer <span class="ot">&lt;-</span> gps_buffer <span class="sc">%&gt;%</span> </span>
-<span id="cb24-2"><a href="#cb24-2"></a>  <span class="fu">st_intersection</span>(shape) <span class="sc">%&gt;%</span> </span>
-<span id="cb24-3"><a href="#cb24-3"></a>  <span class="fu">st_filter</span>(gps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="intersecting-regional-boundaries-2" class="slide level2">
+<h2>Intersecting Regional Boundaries</h2>
+<div style="display: flex; align-items: center; height: 90%">
+<div class="columns">
+<div class="column" style="width:40%;">
+<p>In certain cases, a buffer may cross an admin 1 boundary in <code>shape</code>.</p>
+<p>For example, we’ll look at enumeration area <code>854131009</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>test_ea <span class="ot">&lt;-</span> <span class="dv">854131009</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Keep only the segment containing the original centroid.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a>gps_buffer <span class="ot">&lt;-</span> gps_buffer <span class="sc">%&gt;%</span> </span>
+<span id="cb25-2"><a href="#cb25-2"></a>  <span class="fu">st_intersection</span>(shape) <span class="sc">%&gt;%</span> </span>
+<span id="cb25-3"><a href="#cb25-3"></a>  <span class="fu">st_filter</span>(gps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column" style="width:60%;">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-32-1.png" width="384"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 </section>
@@ -959,23 +1009,32 @@ Projected CRS: WGS 84 / UTM zone 30N
 <p>Finally, we can return to our original CRS defined by arc-degrees.</p>
 </div>
 <div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a>gps_buffer <span class="ot">&lt;-</span> gps_buffer <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">4326</span>)</span>
+<span id="cb26-2"><a href="#cb26-2"></a>shape <span class="ot">&lt;-</span> shape <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">4326</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a>gps_buffer <span class="ot">&lt;-</span> gps_buffer <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">4326</span>)</span>
-<span id="cb25-2"><a href="#cb25-2"></a>shape <span class="ot">&lt;-</span> shape <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">4326</span>)</span>
-<span id="cb25-3"><a href="#cb25-3"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
-<span id="cb25-4"><a href="#cb25-4"></a>  <span class="fu">layer_spatial</span>(shape, <span class="at">alpha =</span> <span class="dv">0</span>) <span class="sc">+</span> </span>
-<span id="cb25-5"><a href="#cb25-5"></a>  <span class="fu">layer_spatial</span>(gps_buffer, <span class="at">alpha =</span> <span class="dv">0</span>) <span class="sc">+</span> </span>
-<span id="cb25-6"><a href="#cb25-6"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb27-2"><a href="#cb27-2"></a>  <span class="fu">layer_spatial</span>(shape, <span class="at">alpha =</span> <span class="dv">0</span>) <span class="sc">+</span> </span>
+<span id="cb27-3"><a href="#cb27-3"></a>  <span class="fu">layer_spatial</span>(gps_buffer, <span class="at">alpha =</span> <span class="dv">0</span>) <span class="sc">+</span> </span>
+<span id="cb27-4"><a href="#cb27-4"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-31-1.png" width="960"></p>
+<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-34-1.png" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
 </div>
 </section></section>
+<section id="questions-about-pma-gps-data" class="title-slide slide level1 center">
+<h1>Questions about PMA GPS Data</h1>
+
+</section>
+
 <section>
 <section id="mapping-birth-outcomes" class="title-slide slide level1 center">
 <h1>3 - Mapping Birth Outcomes</h1>
@@ -984,11 +1043,14 @@ Projected CRS: WGS 84 / UTM zone 30N
 <section id="birth-outcomes-for-individuals" class="slide level2">
 <h2>Birth outcomes for individuals</h2>
 <div class="fragment fade-in-then-semi-out">
-<p>The variable <a href="">PANELBIRTH_2</a> indicates whether each woman gave birth within the year that passed between Phase 1 and Phase 2 of the panel study.</p>
+<p>Now, we combine <code>pma</code> together with <code>gps_buffer</code>.</p>
+</div>
+<div class="fragment fade-in-then-semi-out">
+<p>The <code>pma</code> variable <a href="">PANELBIRTH_2</a> indicates whether each woman gave birth within the year that passed between Phase 1 and Phase 2 of the panel study.</p>
 </div>
 <div class="fragment fade-in">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a>pma <span class="sc">%&gt;%</span> <span class="fu">count</span>(PANELBIRTH_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a>pma <span class="sc">%&gt;%</span> <span class="fu">count</span>(PANELBIRTH_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 2
                 PANELBIRTH_2     n
@@ -1009,7 +1071,7 @@ We can treat these cases as “No”.
 </div>
 <div class="fragment fade-in">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a>pma <span class="sc">%&gt;%</span> <span class="fu">count</span>(PANELBIRTH_2 <span class="sc">==</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a>pma <span class="sc">%&gt;%</span> <span class="fu">count</span>(PANELBIRTH_2 <span class="sc">==</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 2
   `PANELBIRTH_2 == 1`     n
@@ -1023,15 +1085,15 @@ We can treat these cases as “No”.
 <section id="birth-outcomes-by-ea" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Birth outcomes by EA</h2>
 <div class="fragment fade-in">
-<p>Where are the enumeration areas with the largest proportion of women who gave birth?</p>
+<p>Where are the enumeration areas where more women gave birth than average?</p>
 </div>
 <div class="fragment fade-in">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb30-1" class="hljs-ln-code"><a href="#cb30-1"></a>ea_summary <span class="ot">&lt;-</span> pma <span class="sc">%&gt;%</span> </span>
-<span id="cb30-2" class="hljs-ln-code"><a href="#cb30-2"></a>  <span class="fu">as_survey_design</span>(<span class="at">weight =</span> PANELWEIGHT) <span class="sc">%&gt;%</span> </span>
-<span id="cb30-3" class="hljs-ln-code"><a href="#cb30-3"></a>  <span class="fu">group_by</span>(<span class="at">ea =</span> EAID_1, <span class="at">urban =</span> URBAN <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb30-4" class="hljs-ln-code"><a href="#cb30-4"></a>  <span class="fu">summarise</span>(<span class="at">birth_prop =</span> <span class="fu">survey_mean</span>(PANELBIRTH_2 <span class="sc">==</span> <span class="dv">1</span>, <span class="at">vartype =</span> <span class="cn">NULL</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb30-5" class="hljs-ln-code"><a href="#cb30-5"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb32-1" class="hljs-ln-code"><a href="#cb32-1"></a>ea_summary <span class="ot">&lt;-</span> pma <span class="sc">%&gt;%</span> </span>
+<span id="cb32-2" class="hljs-ln-code"><a href="#cb32-2"></a>  <span class="fu">as_survey_design</span>(<span class="at">weight =</span> PANELWEIGHT) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-3" class="hljs-ln-code"><a href="#cb32-3"></a>  <span class="fu">group_by</span>(<span class="at">ea =</span> EAID_1, <span class="at">urban =</span> URBAN <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-4" class="hljs-ln-code"><a href="#cb32-4"></a>  <span class="fu">summarise</span>(<span class="at">birth_prop =</span> <span class="fu">survey_mean</span>(PANELBIRTH_2 <span class="sc">==</span> <span class="dv">1</span>, <span class="at">vartype =</span> <span class="cn">NULL</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-5" class="hljs-ln-code"><a href="#cb32-5"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment fade-in">
@@ -1057,16 +1119,16 @@ We can treat these cases as “No”.
 </section>
 <section id="birth-outcomes-by-ea-1" class="slide level2" data-auto-animate="true" data-visibility="uncounted">
 <h2 data-id="quarto-animate-title">Birth outcomes by EA</h2>
-<p>Where are the enumeration areas with the largest proportion of women who gave birth?</p>
+<p>Where are the enumeration areas where more women gave birth than average?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32" data-code-line-numbers="6-8"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb32-1" class="hljs-ln-code"><a href="#cb32-1"></a>ea_summary <span class="ot">&lt;-</span> pma <span class="sc">%&gt;%</span> </span>
-<span id="cb32-2" class="hljs-ln-code"><a href="#cb32-2"></a>  <span class="fu">as_survey_design</span>(<span class="at">weight =</span> PANELWEIGHT) <span class="sc">%&gt;%</span> </span>
-<span id="cb32-3" class="hljs-ln-code"><a href="#cb32-3"></a>  <span class="fu">group_by</span>(<span class="at">ea =</span> EAID_1, <span class="at">urban =</span> URBAN <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb32-4" class="hljs-ln-code"><a href="#cb32-4"></a>  <span class="fu">summarise</span>(<span class="at">birth_prop =</span> <span class="fu">survey_mean</span>(PANELBIRTH_2 <span class="sc">==</span> <span class="dv">1</span>, <span class="at">vartype =</span> <span class="cn">NULL</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb32-5" class="hljs-ln-code"><a href="#cb32-5"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb32-6" class="hljs-ln-code"><a href="#cb32-6"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb32-7" class="hljs-ln-code"><a href="#cb32-7"></a>    <span class="at">ntile =</span> <span class="fu">ntile</span>(birth_prop, <span class="dv">2</span>)</span>
-<span id="cb32-8" class="hljs-ln-code"><a href="#cb32-8"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34" data-code-line-numbers="6-8"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb34-1" class="hljs-ln-code"><a href="#cb34-1"></a>ea_summary <span class="ot">&lt;-</span> pma <span class="sc">%&gt;%</span> </span>
+<span id="cb34-2" class="hljs-ln-code"><a href="#cb34-2"></a>  <span class="fu">as_survey_design</span>(<span class="at">weight =</span> PANELWEIGHT) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-3" class="hljs-ln-code"><a href="#cb34-3"></a>  <span class="fu">group_by</span>(<span class="at">ea =</span> EAID_1, <span class="at">urban =</span> URBAN <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-4" class="hljs-ln-code"><a href="#cb34-4"></a>  <span class="fu">summarise</span>(<span class="at">birth_prop =</span> <span class="fu">survey_mean</span>(PANELBIRTH_2 <span class="sc">==</span> <span class="dv">1</span>, <span class="at">vartype =</span> <span class="cn">NULL</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-5" class="hljs-ln-code"><a href="#cb34-5"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb34-6" class="hljs-ln-code"><a href="#cb34-6"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb34-7" class="hljs-ln-code"><a href="#cb34-7"></a>    <span class="at">ntile =</span> <span class="fu">ntile</span>(birth_prop, <span class="dv">2</span>)</span>
+<span id="cb34-8" class="hljs-ln-code"><a href="#cb34-8"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
@@ -1089,17 +1151,17 @@ We can treat these cases as “No”.
 </section>
 <section id="birth-outcomes-by-ea-2" class="slide level2" data-auto-animate="true" data-visibility="uncounted">
 <h2 data-id="quarto-animate-title">Birth outcomes by EA</h2>
-<p>Where are the enumeration areas with the largest proportion of women who gave birth?</p>
+<p>Where are the enumeration areas where more women gave birth than average?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb34" data-code-line-numbers="8"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb34-1" class="hljs-ln-code"><a href="#cb34-1"></a>ea_summary <span class="ot">&lt;-</span> pma <span class="sc">%&gt;%</span> </span>
-<span id="cb34-2" class="hljs-ln-code"><a href="#cb34-2"></a>  <span class="fu">as_survey_design</span>(<span class="at">weight =</span> PANELWEIGHT) <span class="sc">%&gt;%</span> </span>
-<span id="cb34-3" class="hljs-ln-code"><a href="#cb34-3"></a>  <span class="fu">group_by</span>(<span class="at">ea =</span> EAID_1, <span class="at">urban =</span> URBAN <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb34-4" class="hljs-ln-code"><a href="#cb34-4"></a>  <span class="fu">summarise</span>(<span class="at">birth_prop =</span> <span class="fu">survey_mean</span>(PANELBIRTH_2 <span class="sc">==</span> <span class="dv">1</span>, <span class="at">vartype =</span> <span class="cn">NULL</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb34-5" class="hljs-ln-code"><a href="#cb34-5"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb34-6" class="hljs-ln-code"><a href="#cb34-6"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb34-7" class="hljs-ln-code"><a href="#cb34-7"></a>    <span class="at">ntile =</span> <span class="fu">ntile</span>(birth_prop, <span class="dv">2</span>),</span>
-<span id="cb34-8" class="hljs-ln-code"><a href="#cb34-8"></a>    <span class="at">many_births =</span> ntile <span class="sc">==</span> <span class="dv">2</span></span>
-<span id="cb34-9" class="hljs-ln-code"><a href="#cb34-9"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36" data-code-line-numbers="8"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb36-1" class="hljs-ln-code"><a href="#cb36-1"></a>ea_summary <span class="ot">&lt;-</span> pma <span class="sc">%&gt;%</span> </span>
+<span id="cb36-2" class="hljs-ln-code"><a href="#cb36-2"></a>  <span class="fu">as_survey_design</span>(<span class="at">weight =</span> PANELWEIGHT) <span class="sc">%&gt;%</span> </span>
+<span id="cb36-3" class="hljs-ln-code"><a href="#cb36-3"></a>  <span class="fu">group_by</span>(<span class="at">ea =</span> EAID_1, <span class="at">urban =</span> URBAN <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb36-4" class="hljs-ln-code"><a href="#cb36-4"></a>  <span class="fu">summarise</span>(<span class="at">birth_prop =</span> <span class="fu">survey_mean</span>(PANELBIRTH_2 <span class="sc">==</span> <span class="dv">1</span>, <span class="at">vartype =</span> <span class="cn">NULL</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb36-5" class="hljs-ln-code"><a href="#cb36-5"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb36-6" class="hljs-ln-code"><a href="#cb36-6"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb36-7" class="hljs-ln-code"><a href="#cb36-7"></a>    <span class="at">ntile =</span> <span class="fu">ntile</span>(birth_prop, <span class="dv">2</span>),</span>
+<span id="cb36-8" class="hljs-ln-code"><a href="#cb36-8"></a>    <span class="at">many_births =</span> ntile <span class="sc">==</span> <span class="dv">2</span></span>
+<span id="cb36-9" class="hljs-ln-code"><a href="#cb36-9"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
@@ -1126,11 +1188,11 @@ We can treat these cases as “No”.
 <p>Use <code>full_join</code> to merge all rows of <code>ea_summary</code> to <code>gps_buffer</code>.</p>
 <p>If you list <code>gps_buffer</code> <em>first</em>, the result will be another Simple Features object.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1"></a>ea_summary_gps <span class="ot">&lt;-</span> <span class="fu">full_join</span>(</span>
-<span id="cb36-2"><a href="#cb36-2"></a>  gps_buffer <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="at">ea =</span> EAID), </span>
-<span id="cb36-3"><a href="#cb36-3"></a>  ea_summary, </span>
-<span id="cb36-4"><a href="#cb36-4"></a>  <span class="at">by =</span> <span class="st">"ea"</span></span>
-<span id="cb36-5"><a href="#cb36-5"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1"></a>ea_summary_gps <span class="ot">&lt;-</span> <span class="fu">full_join</span>(</span>
+<span id="cb38-2"><a href="#cb38-2"></a>  gps_buffer <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="at">ea =</span> EAID), </span>
+<span id="cb38-3"><a href="#cb38-3"></a>  ea_summary, </span>
+<span id="cb38-4"><a href="#cb38-4"></a>  <span class="at">by =</span> <span class="st">"ea"</span></span>
+<span id="cb38-5"><a href="#cb38-5"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
@@ -1162,13 +1224,13 @@ Geodetic CRS:  WGS 84
 <section id="mapping-birth-outcomes-by-ea" class="slide level2">
 <h2>Mapping Birth Outcomes by EA</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
-<span id="cb38-2"><a href="#cb38-2"></a>  <span class="fu">layer_spatial</span>(ea_summary_gps, <span class="fu">aes</span>(<span class="at">fill =</span> many_births)) <span class="sc">+</span> </span>
-<span id="cb38-3"><a href="#cb38-3"></a>  <span class="fu">layer_spatial</span>(shape, <span class="at">alpha =</span> <span class="dv">0</span>) <span class="sc">+</span> </span>
-<span id="cb38-4"><a href="#cb38-4"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb40-2"><a href="#cb40-2"></a>  <span class="fu">layer_spatial</span>(ea_summary_gps, <span class="fu">aes</span>(<span class="at">fill =</span> many_births)) <span class="sc">+</span> </span>
+<span id="cb40-3"><a href="#cb40-3"></a>  <span class="fu">layer_spatial</span>(shape, <span class="at">alpha =</span> <span class="dv">0</span>) <span class="sc">+</span> </span>
+<span id="cb40-4"><a href="#cb40-4"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="slides_files/figure-revealjs/unnamed-chunk-42-1.png" width="960" class="r-stretch quarto-figure-center"></section></section>
+<img data-src="slides_files/figure-revealjs/unnamed-chunk-45-1.png" width="960" class="r-stretch quarto-figure-center"></section></section>
 <section>
 <section id="chirps-annual-rainfall-summary" class="title-slide slide level1 center">
 <h1>4 - CHIRPS: Annual rainfall summary</h1>
@@ -1206,7 +1268,7 @@ Geodetic CRS:  WGS 84
 <p>The <a href="">terra</a> package reads Raster files.</p>
 <p>You <em>could</em> simply read the data from a single day, and map the result.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1"></a>june5_2020 <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="st">"data/chirps/20200605.tif"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1"></a>june5_2020 <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="st">"data/chirps/20200605.tif"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
@@ -1235,44 +1297,44 @@ name        : 20200605 </code></pre>
 <section id="june-5-2020" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">June 5, 2020</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb41-1" class="hljs-ln-code"><a href="#cb41-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
-<span id="cb41-2" class="hljs-ln-code"><a href="#cb41-2"></a>  <span class="fu">layer_spatial</span>(june5_2020) <span class="sc">+</span> </span>
-<span id="cb41-3" class="hljs-ln-code"><a href="#cb41-3"></a>  <span class="fu">layer_spatial</span>(shape, <span class="at">alpha =</span> <span class="dv">0</span>) <span class="sc">+</span> </span>
-<span id="cb41-4" class="hljs-ln-code"><a href="#cb41-4"></a>  <span class="fu">theme_minimal</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb43-1" class="hljs-ln-code"><a href="#cb43-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb43-2" class="hljs-ln-code"><a href="#cb43-2"></a>  <span class="fu">layer_spatial</span>(june5_2020) <span class="sc">+</span> </span>
+<span id="cb43-3" class="hljs-ln-code"><a href="#cb43-3"></a>  <span class="fu">layer_spatial</span>(shape, <span class="at">alpha =</span> <span class="dv">0</span>) <span class="sc">+</span> </span>
+<span id="cb43-4" class="hljs-ln-code"><a href="#cb43-4"></a>  <span class="fu">theme_minimal</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="june-5-2020-1" class="slide level2" data-auto-animate="true" data-visibility="uncounted">
 <h2 data-id="quarto-animate-title">June 5, 2020</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb42-1" class="hljs-ln-code"><a href="#cb42-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
-<span id="cb42-2" class="hljs-ln-code"><a href="#cb42-2"></a>  <span class="fu">layer_spatial</span>(june5_2020) <span class="sc">+</span> </span>
-<span id="cb42-3" class="hljs-ln-code"><a href="#cb42-3"></a>  <span class="fu">layer_spatial</span>(shape, <span class="at">alpha =</span> <span class="dv">0</span>) <span class="sc">+</span> </span>
-<span id="cb42-4" class="hljs-ln-code"><a href="#cb42-4"></a>  <span class="fu">theme_minimal</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb44-1" class="hljs-ln-code"><a href="#cb44-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb44-2" class="hljs-ln-code"><a href="#cb44-2"></a>  <span class="fu">layer_spatial</span>(june5_2020) <span class="sc">+</span> </span>
+<span id="cb44-3" class="hljs-ln-code"><a href="#cb44-3"></a>  <span class="fu">layer_spatial</span>(shape, <span class="at">alpha =</span> <span class="dv">0</span>) <span class="sc">+</span> </span>
+<span id="cb44-4" class="hljs-ln-code"><a href="#cb44-4"></a>  <span class="fu">theme_minimal</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="slides_files/figure-revealjs/unnamed-chunk-46-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<img data-src="slides_files/figure-revealjs/unnamed-chunk-49-1.png" width="960" class="r-stretch quarto-figure-center"></section>
 <section id="june-5-2020-2" class="slide level2" data-auto-animate="true" data-visibility="uncounted">
 <h2 data-id="quarto-animate-title">June 5, 2020</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb43" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb43-1" class="hljs-ln-code"><a href="#cb43-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
-<span id="cb43-2" class="hljs-ln-code"><a href="#cb43-2"></a>  <span class="fu">layer_spatial</span>(<span class="fu">mask</span>(june5_2020, <span class="fu">vect</span>(shape), <span class="at">touches =</span> <span class="cn">FALSE</span>)) <span class="sc">+</span> </span>
-<span id="cb43-3" class="hljs-ln-code"><a href="#cb43-3"></a>  <span class="fu">layer_spatial</span>(shape, <span class="at">alpha =</span> <span class="dv">0</span>) <span class="sc">+</span> </span>
-<span id="cb43-4" class="hljs-ln-code"><a href="#cb43-4"></a>  <span class="fu">theme_minimal</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb45" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb45-1" class="hljs-ln-code"><a href="#cb45-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb45-2" class="hljs-ln-code"><a href="#cb45-2"></a>  <span class="fu">layer_spatial</span>(<span class="fu">mask</span>(june5_2020, <span class="fu">vect</span>(shape), <span class="at">touches =</span> <span class="cn">FALSE</span>)) <span class="sc">+</span> </span>
+<span id="cb45-3" class="hljs-ln-code"><a href="#cb45-3"></a>  <span class="fu">layer_spatial</span>(shape, <span class="at">alpha =</span> <span class="dv">0</span>) <span class="sc">+</span> </span>
+<span id="cb45-4" class="hljs-ln-code"><a href="#cb45-4"></a>  <span class="fu">theme_minimal</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="slides_files/figure-revealjs/unnamed-chunk-47-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<img data-src="slides_files/figure-revealjs/unnamed-chunk-50-1.png" width="960" class="r-stretch quarto-figure-center"></section>
 <section id="june-5-2020-3" class="slide level2" data-auto-animate="true" data-visibility="uncounted">
 <h2 data-id="quarto-animate-title">June 5, 2020</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb44" data-code-line-numbers="5-7"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb44-1" class="hljs-ln-code"><a href="#cb44-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
-<span id="cb44-2" class="hljs-ln-code"><a href="#cb44-2"></a>  <span class="fu">layer_spatial</span>(<span class="fu">mask</span>(june5_2020, <span class="fu">vect</span>(shape), <span class="at">touches =</span> <span class="cn">FALSE</span>)) <span class="sc">+</span> </span>
-<span id="cb44-3" class="hljs-ln-code"><a href="#cb44-3"></a>  <span class="fu">layer_spatial</span>(shape, <span class="at">alpha =</span> <span class="dv">0</span>) <span class="sc">+</span> </span>
-<span id="cb44-4" class="hljs-ln-code"><a href="#cb44-4"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
-<span id="cb44-5" class="hljs-ln-code"><a href="#cb44-5"></a>  <span class="fu">scale_fill_gradient2</span>(<span class="at">low =</span> <span class="st">"transparent"</span>, <span class="at">high =</span> <span class="st">"#4375B7"</span>, <span class="at">na.value =</span> <span class="st">"transparent"</span>) <span class="sc">+</span> </span>
-<span id="cb44-6" class="hljs-ln-code"><a href="#cb44-6"></a>  <span class="fu">labs</span>(<span class="at">fill =</span> <span class="st">"Rainfall (mm)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb46" data-code-line-numbers="5-7"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb46-1" class="hljs-ln-code"><a href="#cb46-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb46-2" class="hljs-ln-code"><a href="#cb46-2"></a>  <span class="fu">layer_spatial</span>(<span class="fu">mask</span>(june5_2020, <span class="fu">vect</span>(shape), <span class="at">touches =</span> <span class="cn">FALSE</span>)) <span class="sc">+</span> </span>
+<span id="cb46-3" class="hljs-ln-code"><a href="#cb46-3"></a>  <span class="fu">layer_spatial</span>(shape, <span class="at">alpha =</span> <span class="dv">0</span>) <span class="sc">+</span> </span>
+<span id="cb46-4" class="hljs-ln-code"><a href="#cb46-4"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb46-5" class="hljs-ln-code"><a href="#cb46-5"></a>  <span class="fu">scale_fill_gradient2</span>(<span class="at">low =</span> <span class="st">"transparent"</span>, <span class="at">high =</span> <span class="st">"#4375B7"</span>, <span class="at">na.value =</span> <span class="st">"transparent"</span>) <span class="sc">+</span> </span>
+<span id="cb46-6" class="hljs-ln-code"><a href="#cb46-6"></a>  <span class="fu">labs</span>(<span class="at">fill =</span> <span class="st">"Rainfall (mm)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="slides_files/figure-revealjs/unnamed-chunk-48-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<img data-src="slides_files/figure-revealjs/unnamed-chunk-51-1.png" width="960" class="r-stretch quarto-figure-center"></section>
 <section id="aggregation" class="slide level2">
 <h2>Aggregation</h2>
 <div class="fragment">
@@ -1283,11 +1345,11 @@ name        : 20200605 </code></pre>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1"></a>years <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="dv">1981</span><span class="sc">:</span><span class="dv">2020</span>, <span class="sc">~</span>{</span>
-<span id="cb45-2"><a href="#cb45-2"></a>  yr <span class="ot">&lt;-</span> .x</span>
-<span id="cb45-3"><a href="#cb45-3"></a>})</span>
-<span id="cb45-4"><a href="#cb45-4"></a></span>
-<span id="cb45-5"><a href="#cb45-5"></a>years <span class="ot">&lt;-</span> <span class="fu">set_names</span>(years, <span class="dv">1981</span><span class="sc">:</span><span class="dv">2020</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1"></a>years <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="dv">1981</span><span class="sc">:</span><span class="dv">2020</span>, <span class="sc">~</span>{</span>
+<span id="cb47-2"><a href="#cb47-2"></a>  yr <span class="ot">&lt;-</span> .x</span>
+<span id="cb47-3"><a href="#cb47-3"></a>})</span>
+<span id="cb47-4"><a href="#cb47-4"></a></span>
+<span id="cb47-5"><a href="#cb47-5"></a>years <span class="ot">&lt;-</span> <span class="fu">set_names</span>(years, <span class="dv">1981</span><span class="sc">:</span><span class="dv">2020</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
@@ -1421,19 +1483,19 @@ $`2020`
 <p>Ultimately, you’ll want to work with <code>.tif</code> images from <em>many</em> days at the same time.</p>
 <p>We’ll exploit patterns in the name of each file to load all days from each year that fall within the Burkina Faso “rainy season” (June 1 - October 1).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb47" data-code-line-numbers="3-10"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb47-1" class="hljs-ln-code"><a href="#cb47-1"></a>years <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="dv">1981</span><span class="sc">:</span><span class="dv">2020</span>, <span class="sc">~</span>{</span>
-<span id="cb47-2" class="hljs-ln-code"><a href="#cb47-2"></a>  yr <span class="ot">&lt;-</span> .x</span>
-<span id="cb47-3" class="hljs-ln-code"><a href="#cb47-3"></a>  months <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="dv">6</span><span class="sc">:</span><span class="dv">9</span>, <span class="sc">~</span>{</span>
-<span id="cb47-4" class="hljs-ln-code"><a href="#cb47-4"></a>      <span class="fu">list.files</span>(</span>
-<span id="cb47-5" class="hljs-ln-code"><a href="#cb47-5"></a>        <span class="st">"data/chirps"</span>,</span>
-<span id="cb47-6" class="hljs-ln-code"><a href="#cb47-6"></a>        <span class="at">full.names =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb47-7" class="hljs-ln-code"><a href="#cb47-7"></a>        <span class="at">pattern =</span> <span class="fu">paste0</span>(yr, <span class="st">"0"</span>, .x, <span class="st">".*tif"</span>)</span>
-<span id="cb47-8" class="hljs-ln-code"><a href="#cb47-8"></a>      ) </span>
-<span id="cb47-9" class="hljs-ln-code"><a href="#cb47-9"></a>    })</span>
-<span id="cb47-10" class="hljs-ln-code"><a href="#cb47-10"></a>  <span class="fu">unlist</span>(months) </span>
-<span id="cb47-11" class="hljs-ln-code"><a href="#cb47-11"></a>})</span>
-<span id="cb47-12" class="hljs-ln-code"><a href="#cb47-12"></a></span>
-<span id="cb47-13" class="hljs-ln-code"><a href="#cb47-13"></a>years <span class="ot">&lt;-</span> <span class="fu">set_names</span>(years, <span class="dv">1981</span><span class="sc">:</span><span class="dv">2020</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb49" data-code-line-numbers="3-10"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb49-1" class="hljs-ln-code"><a href="#cb49-1"></a>years <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="dv">1981</span><span class="sc">:</span><span class="dv">2020</span>, <span class="sc">~</span>{</span>
+<span id="cb49-2" class="hljs-ln-code"><a href="#cb49-2"></a>  yr <span class="ot">&lt;-</span> .x</span>
+<span id="cb49-3" class="hljs-ln-code"><a href="#cb49-3"></a>  months <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="dv">6</span><span class="sc">:</span><span class="dv">9</span>, <span class="sc">~</span>{</span>
+<span id="cb49-4" class="hljs-ln-code"><a href="#cb49-4"></a>      <span class="fu">list.files</span>(</span>
+<span id="cb49-5" class="hljs-ln-code"><a href="#cb49-5"></a>        <span class="st">"data/chirps"</span>,</span>
+<span id="cb49-6" class="hljs-ln-code"><a href="#cb49-6"></a>        <span class="at">full.names =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb49-7" class="hljs-ln-code"><a href="#cb49-7"></a>        <span class="at">pattern =</span> <span class="fu">paste0</span>(yr, <span class="st">"0"</span>, .x, <span class="st">".*tif"</span>)</span>
+<span id="cb49-8" class="hljs-ln-code"><a href="#cb49-8"></a>      ) </span>
+<span id="cb49-9" class="hljs-ln-code"><a href="#cb49-9"></a>    })</span>
+<span id="cb49-10" class="hljs-ln-code"><a href="#cb49-10"></a>  <span class="fu">unlist</span>(months) </span>
+<span id="cb49-11" class="hljs-ln-code"><a href="#cb49-11"></a>})</span>
+<span id="cb49-12" class="hljs-ln-code"><a href="#cb49-12"></a></span>
+<span id="cb49-13" class="hljs-ln-code"><a href="#cb49-13"></a>years <span class="ot">&lt;-</span> <span class="fu">set_names</span>(years, <span class="dv">1981</span><span class="sc">:</span><span class="dv">2020</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="fragment">
 <div class="cell">
@@ -3990,7 +4052,7 @@ $`2020`
 <div class="fragment">
 <p>We now create one <strong>multi-layered</strong> raster for each year, and store all years in one large list.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1"></a>years <span class="ot">&lt;-</span> years <span class="sc">%&gt;%</span> <span class="fu">map</span>(<span class="sc">~</span>.x <span class="sc">%&gt;%</span> rast)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1"></a>years <span class="ot">&lt;-</span> years <span class="sc">%&gt;%</span> <span class="fu">map</span>(<span class="sc">~</span>.x <span class="sc">%&gt;%</span> rast)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
@@ -3998,7 +4060,7 @@ $`2020`
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1"></a>years<span class="sc">$</span><span class="st">`</span><span class="at">2020</span><span class="st">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1"></a>years<span class="sc">$</span><span class="st">`</span><span class="at">2020</span><span class="st">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>class       : SpatRaster 
 dimensions  : 115, 159, 122  (nrow, ncol, nlyr)
@@ -4021,7 +4083,7 @@ names       : 20200601, 20200602, 20200603, 20200604, 20200605, 20200606, ... </
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1"></a>years<span class="sc">$</span><span class="st">`</span><span class="at">2020</span><span class="st">`</span> <span class="sc">%&gt;%</span> <span class="fu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1"></a>years<span class="sc">$</span><span class="st">`</span><span class="at">2020</span><span class="st">`</span> <span class="sc">%&gt;%</span> <span class="fu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>class       : SpatRaster 
 dimensions  : 115, 159, 1  (nrow, ncol, nlyr)
@@ -4040,9 +4102,9 @@ max value   : 1142.682 </code></pre>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1"></a>chirps_seasonal_sum <span class="ot">&lt;-</span> <span class="fu">map</span>(years, <span class="sc">~</span>.x <span class="sc">%&gt;%</span> sum)</span>
-<span id="cb54-2"><a href="#cb54-2"></a></span>
-<span id="cb54-3"><a href="#cb54-3"></a>chirps_seasonal_sum</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1"></a>chirps_seasonal_sum <span class="ot">&lt;-</span> <span class="fu">map</span>(years, <span class="sc">~</span>.x <span class="sc">%&gt;%</span> sum)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>$`1981`
 class       : SpatRaster 
@@ -4485,9 +4547,6 @@ min value   : 325.3491
 max value   : 1142.682 </code></pre>
 </div>
 </div>
-<div class="cell">
-
-</div>
 </div>
 </section>
 <section id="one-layer-per-year" class="slide level2">
@@ -4497,7 +4556,7 @@ max value   : 1142.682 </code></pre>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1"></a>chirps_seasonal_sum <span class="ot">&lt;-</span> <span class="fu">rast</span>(chirps_seasonal_sum)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1"></a>chirps_seasonal_sum <span class="ot">&lt;-</span> <span class="fu">rast</span>(chirps_seasonal_sum)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
@@ -4530,19 +4589,19 @@ max values  :  985.3304,  834.6878,  862.3036, 1024.9135, 1053.9604, 1017.6069, 
 <div class="fragment">
 <p>Here is the <em>average</em> seasonal rainfall accumulation for each pixel (across all years):</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1"></a>chirps_avg <span class="ot">&lt;-</span> <span class="fu">mean</span>(chirps_seasonal_sum)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1"></a>chirps_avg <span class="ot">&lt;-</span> <span class="fu">mean</span>(chirps_seasonal_sum)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
 <p>And here is the <em>standard deviation</em> from that average:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1"></a>chirps_sd <span class="ot">&lt;-</span> <span class="fu">stdev</span>(chirps_seasonal_sum)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1"></a>chirps_sd <span class="ot">&lt;-</span> <span class="fu">stdev</span>(chirps_seasonal_sum)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
 <p>Finally we can use both to compute a Z-score for each pixel in each year.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1"></a>chirps_z <span class="ot">&lt;-</span> (chirps_seasonal_sum <span class="sc">-</span> chirps_avg) <span class="sc">/</span> chirps_sd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1"></a>chirps_z <span class="ot">&lt;-</span> (chirps_seasonal_sum <span class="sc">-</span> chirps_avg) <span class="sc">/</span> chirps_sd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
@@ -4565,15 +4624,15 @@ max values  :  1.5658769,  0.8569690,  0.6566302,  1.6017437,  3.1202732,  1.875
 <h2>2020 Seasonal Rainfall Accumulation</h2>
 <p>Total accumulation relative to local 40-year average</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb62" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
-<span id="cb62-2"><a href="#cb62-2"></a>  <span class="fu">layer_spatial</span>(<span class="fu">mask</span>(chirps_z<span class="sc">$</span><span class="st">`</span><span class="at">2020</span><span class="st">`</span>, <span class="fu">vect</span>(shape), <span class="at">touches =</span> <span class="cn">FALSE</span>)) <span class="sc">+</span> </span>
-<span id="cb62-3"><a href="#cb62-3"></a>  <span class="fu">layer_spatial</span>(shape, <span class="at">alpha =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
-<span id="cb62-4"><a href="#cb62-4"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
-<span id="cb62-5"><a href="#cb62-5"></a>  <span class="fu">scale_fill_gradient2</span>(<span class="at">low =</span> <span class="st">"#D72B22"</span>, <span class="at">high =</span> <span class="st">"#4375B7"</span>, <span class="at">na.value =</span> <span class="st">"transparent"</span>) <span class="sc">+</span> </span>
-<span id="cb62-6"><a href="#cb62-6"></a>  <span class="fu">labs</span>(<span class="at">fill =</span> <span class="st">"Z-score (1981-2020)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb64" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb64-2"><a href="#cb64-2"></a>  <span class="fu">layer_spatial</span>(<span class="fu">mask</span>(chirps_z<span class="sc">$</span><span class="st">`</span><span class="at">2020</span><span class="st">`</span>, <span class="fu">vect</span>(shape), <span class="at">touches =</span> <span class="cn">FALSE</span>)) <span class="sc">+</span> </span>
+<span id="cb64-3"><a href="#cb64-3"></a>  <span class="fu">layer_spatial</span>(shape, <span class="at">alpha =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb64-4"><a href="#cb64-4"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb64-5"><a href="#cb64-5"></a>  <span class="fu">scale_fill_gradient2</span>(<span class="at">low =</span> <span class="st">"#D72B22"</span>, <span class="at">high =</span> <span class="st">"#4375B7"</span>, <span class="at">na.value =</span> <span class="st">"transparent"</span>) <span class="sc">+</span> </span>
+<span id="cb64-6"><a href="#cb64-6"></a>  <span class="fu">labs</span>(<span class="at">fill =</span> <span class="st">"Z-score (1981-2020)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="slides_files/figure-revealjs/unnamed-chunk-64-1.png" width="960" class="r-stretch quarto-figure-center"></section></section>
+<img data-src="slides_files/figure-revealjs/unnamed-chunk-67-1.png" width="960" class="r-stretch quarto-figure-center"></section></section>
 <section>
 <section id="bringing-it-all-together" class="title-slide slide level1 center">
 <h1>5 - Bringing it All Together</h1>
@@ -4585,26 +4644,26 @@ max values  :  1.5658769,  0.8569690,  0.6566302,  1.6017437,  3.1202732,  1.875
 <div class="column" style="width:60%&quot;;">
 <p>Remember our example EA? It overlaps 8 CHIRPS pixels.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1"></a>test_buffer <span class="ot">&lt;-</span> ea_summary_gps <span class="sc">%&gt;%</span> </span>
-<span id="cb63-2"><a href="#cb63-2"></a>  <span class="fu">filter</span>(ea <span class="sc">==</span> test_ea)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1"></a>test_buffer <span class="ot">&lt;-</span> ea_summary_gps <span class="sc">%&gt;%</span> </span>
+<span id="cb65-2"><a href="#cb65-2"></a>  <span class="fu">filter</span>(ea <span class="sc">==</span> test_ea)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
-<span id="cb64-2"><a href="#cb64-2"></a>  <span class="fu">layer_spatial</span>(</span>
-<span id="cb64-3"><a href="#cb64-3"></a>    chirps_z<span class="sc">$</span><span class="st">`</span><span class="at">2020</span><span class="st">`</span> <span class="sc">%&gt;%</span> </span>
-<span id="cb64-4"><a href="#cb64-4"></a>      <span class="fu">crop</span>(test_buffer, <span class="at">snap =</span> <span class="st">"out"</span>)</span>
-<span id="cb64-5"><a href="#cb64-5"></a>  ) <span class="sc">+</span> </span>
-<span id="cb64-6"><a href="#cb64-6"></a>  <span class="fu">layer_spatial</span>(test_buffer, <span class="at">alpha =</span> <span class="dv">0</span>) <span class="sc">+</span> </span>
-<span id="cb64-7"><a href="#cb64-7"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
-<span id="cb64-8"><a href="#cb64-8"></a>  <span class="fu">scale_fill_gradient2</span>(</span>
-<span id="cb64-9"><a href="#cb64-9"></a>    <span class="at">high =</span> <span class="st">"#4375B7"</span>, </span>
-<span id="cb64-10"><a href="#cb64-10"></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">2</span>)</span>
-<span id="cb64-11"><a href="#cb64-11"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb66-2"><a href="#cb66-2"></a>  <span class="fu">layer_spatial</span>(</span>
+<span id="cb66-3"><a href="#cb66-3"></a>    chirps_z<span class="sc">$</span><span class="st">`</span><span class="at">2020</span><span class="st">`</span> <span class="sc">%&gt;%</span> </span>
+<span id="cb66-4"><a href="#cb66-4"></a>      <span class="fu">crop</span>(test_buffer, <span class="at">snap =</span> <span class="st">"out"</span>)</span>
+<span id="cb66-5"><a href="#cb66-5"></a>  ) <span class="sc">+</span> </span>
+<span id="cb66-6"><a href="#cb66-6"></a>  <span class="fu">layer_spatial</span>(test_buffer, <span class="at">alpha =</span> <span class="dv">0</span>) <span class="sc">+</span> </span>
+<span id="cb66-7"><a href="#cb66-7"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb66-8"><a href="#cb66-8"></a>  <span class="fu">scale_fill_gradient2</span>(</span>
+<span id="cb66-9"><a href="#cb66-9"></a>    <span class="at">high =</span> <span class="st">"#4375B7"</span>, </span>
+<span id="cb66-10"><a href="#cb66-10"></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">2</span>)</span>
+<span id="cb66-11"><a href="#cb66-11"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div><div class="column" style="width:40%;">
 <div class="cell">
 <div class="cell-output-display">
-<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-67-1.png" width="672"></p>
+<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-70-1.png" width="672"></p>
 </div>
 </div>
 </div>
@@ -4619,8 +4678,8 @@ max values  :  1.5658769,  0.8569690,  0.6566302,  1.6017437,  3.1202732,  1.875
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1"></a>test_z <span class="ot">&lt;-</span> chirps_z<span class="sc">$</span><span class="st">`</span><span class="at">2020</span><span class="st">`</span> <span class="sc">%&gt;%</span></span>
-<span id="cb65-2"><a href="#cb65-2"></a>  <span class="fu">extract</span>(<span class="fu">vect</span>(test_buffer), <span class="at">weights =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1"></a>test_z <span class="ot">&lt;-</span> chirps_z<span class="sc">$</span><span class="st">`</span><span class="at">2020</span><span class="st">`</span> <span class="sc">%&gt;%</span></span>
+<span id="cb67-2"><a href="#cb67-2"></a>  <span class="fu">extract</span>(<span class="fu">vect</span>(test_buffer), <span class="at">weights =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
@@ -4638,9 +4697,9 @@ max values  :  1.5658769,  0.8569690,  0.6566302,  1.6017437,  3.1202732,  1.875
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1"></a>test_z <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(</span>
-<span id="cb67-2"><a href="#cb67-2"></a>  <span class="at">wtd_mean =</span> <span class="fu">weighted.mean</span>(<span class="st">`</span><span class="at">2020</span><span class="st">`</span>, weight)</span>
-<span id="cb67-3"><a href="#cb67-3"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1"></a>test_z <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(</span>
+<span id="cb69-2"><a href="#cb69-2"></a>  <span class="at">wtd_mean =</span> <span class="fu">weighted.mean</span>(<span class="st">`</span><span class="at">2020</span><span class="st">`</span>, weight)</span>
+<span id="cb69-3"><a href="#cb69-3"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  wtd_mean
 1 1.429138</code></pre>
@@ -4650,7 +4709,7 @@ max values  :  1.5658769,  0.8569690,  0.6566302,  1.6017437,  3.1202732,  1.875
 </div><div class="column" style="width:40%;">
 <div class="cell">
 <div class="cell-output-display">
-<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-71-1.png" width="672"></p>
+<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-74-1.png" width="672"></p>
 </div>
 </div>
 </div>
@@ -4661,7 +4720,7 @@ max values  :  1.5658769,  0.8569690,  0.6566302,  1.6017437,  3.1202732,  1.875
 <div class="fragment">
 <p>Link by row ID</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb69-1" class="hljs-ln-code"><a href="#cb69-1"></a>ea_summary_gps <span class="ot">&lt;-</span> ea_summary_gps <span class="sc">%&gt;%</span> <span class="fu">rowid_to_column</span>(<span class="st">"ID"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb71-1" class="hljs-ln-code"><a href="#cb71-1"></a>ea_summary_gps <span class="ot">&lt;-</span> ea_summary_gps <span class="sc">%&gt;%</span> <span class="fu">rowid_to_column</span>(<span class="st">"ID"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
@@ -4695,11 +4754,11 @@ Geodetic CRS:  WGS 84
 <div class="fragment">
 <p>Calculate one z-score per row ID</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb71-1" class="hljs-ln-code"><a href="#cb71-1"></a>ea_summary_z <span class="ot">&lt;-</span> chirps_z<span class="sc">$</span><span class="st">`</span><span class="at">2020</span><span class="st">`</span> <span class="sc">%&gt;%</span> </span>
-<span id="cb71-2" class="hljs-ln-code"><a href="#cb71-2"></a>  <span class="fu">extract</span>(<span class="fu">vect</span>(ea_summary_gps), <span class="at">weights =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb71-3" class="hljs-ln-code"><a href="#cb71-3"></a>  <span class="fu">tibble</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb71-4" class="hljs-ln-code"><a href="#cb71-4"></a>  <span class="fu">group_by</span>(ID) <span class="sc">%&gt;%</span> </span>
-<span id="cb71-5" class="hljs-ln-code"><a href="#cb71-5"></a>  <span class="fu">summarise</span>(<span class="at">z =</span> <span class="fu">weighted.mean</span>(<span class="st">`</span><span class="at">2020</span><span class="st">`</span>, weight)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb73-1" class="hljs-ln-code"><a href="#cb73-1"></a>ea_summary_z <span class="ot">&lt;-</span> chirps_z<span class="sc">$</span><span class="st">`</span><span class="at">2020</span><span class="st">`</span> <span class="sc">%&gt;%</span> </span>
+<span id="cb73-2" class="hljs-ln-code"><a href="#cb73-2"></a>  <span class="fu">extract</span>(<span class="fu">vect</span>(ea_summary_gps), <span class="at">weights =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb73-3" class="hljs-ln-code"><a href="#cb73-3"></a>  <span class="fu">tibble</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb73-4" class="hljs-ln-code"><a href="#cb73-4"></a>  <span class="fu">group_by</span>(ID) <span class="sc">%&gt;%</span> </span>
+<span id="cb73-5" class="hljs-ln-code"><a href="#cb73-5"></a>  <span class="fu">summarise</span>(<span class="at">z =</span> <span class="fu">weighted.mean</span>(<span class="st">`</span><span class="at">2020</span><span class="st">`</span>, weight)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
@@ -4728,10 +4787,10 @@ Geodetic CRS:  WGS 84
 <div class="fragment">
 <p>… and join z-scores back with the <code>ea</code> codes for each enumeration area</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb73-1" class="hljs-ln-code"><a href="#cb73-1"></a>ea_summary_z <span class="ot">&lt;-</span> ea_summary_gps <span class="sc">%&gt;%</span> </span>
-<span id="cb73-2" class="hljs-ln-code"><a href="#cb73-2"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb73-3" class="hljs-ln-code"><a href="#cb73-3"></a>  <span class="fu">select</span>(ID, ea) <span class="sc">%&gt;%</span> </span>
-<span id="cb73-4" class="hljs-ln-code"><a href="#cb73-4"></a>  <span class="fu">full_join</span>(ea_summary_z, <span class="at">by =</span> <span class="st">"ID"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb75-1" class="hljs-ln-code"><a href="#cb75-1"></a>ea_summary_z <span class="ot">&lt;-</span> ea_summary_gps <span class="sc">%&gt;%</span> </span>
+<span id="cb75-2" class="hljs-ln-code"><a href="#cb75-2"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb75-3" class="hljs-ln-code"><a href="#cb75-3"></a>  <span class="fu">select</span>(ID, ea) <span class="sc">%&gt;%</span> </span>
+<span id="cb75-4" class="hljs-ln-code"><a href="#cb75-4"></a>  <span class="fu">full_join</span>(ea_summary_z, <span class="at">by =</span> <span class="st">"ID"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
@@ -4764,14 +4823,14 @@ Geodetic CRS:  WGS 84
 <h2>Join Z-scores with Original PMA Data</h2>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1"></a>pma_chirps <span class="ot">&lt;-</span> pma <span class="sc">%&gt;%</span> </span>
-<span id="cb75-2"><a href="#cb75-2"></a>  <span class="fu">transmute</span>(</span>
-<span id="cb75-3"><a href="#cb75-3"></a>    <span class="at">ea =</span> EAID_1, </span>
-<span id="cb75-4"><a href="#cb75-4"></a>    <span class="at">wt =</span> PANELWEIGHT,</span>
-<span id="cb75-5"><a href="#cb75-5"></a>    <span class="at">birth =</span> PANELBIRTH_2 <span class="sc">==</span> <span class="dv">1</span>,</span>
-<span id="cb75-6"><a href="#cb75-6"></a>    <span class="at">urban =</span> URBAN <span class="sc">==</span> <span class="dv">1</span></span>
-<span id="cb75-7"><a href="#cb75-7"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb75-8"><a href="#cb75-8"></a>  <span class="fu">left_join</span>(ea_summary_z, <span class="at">by =</span> <span class="st">"ea"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1"></a>pma_chirps <span class="ot">&lt;-</span> pma <span class="sc">%&gt;%</span> </span>
+<span id="cb77-2"><a href="#cb77-2"></a>  <span class="fu">transmute</span>(</span>
+<span id="cb77-3"><a href="#cb77-3"></a>    <span class="at">ea =</span> EAID_1, </span>
+<span id="cb77-4"><a href="#cb77-4"></a>    <span class="at">wt =</span> PANELWEIGHT,</span>
+<span id="cb77-5"><a href="#cb77-5"></a>    <span class="at">birth =</span> PANELBIRTH_2 <span class="sc">==</span> <span class="dv">1</span>,</span>
+<span id="cb77-6"><a href="#cb77-6"></a>    <span class="at">urban =</span> URBAN <span class="sc">==</span> <span class="dv">1</span></span>
+<span id="cb77-7"><a href="#cb77-7"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb77-8"><a href="#cb77-8"></a>  <span class="fu">left_join</span>(ea_summary_z, <span class="at">by =</span> <span class="st">"ea"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
@@ -4798,12 +4857,12 @@ Geodetic CRS:  WGS 84
 <section id="binomial-model-with-cluster-robust-ses" class="slide level2">
 <h2>Binomial model with cluster-robust SEs</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1"></a><span class="co"># Weighted with cluster-robust SEs</span></span>
-<span id="cb77-2"><a href="#cb77-2"></a>pma_chirps <span class="sc">%&gt;%</span></span>
-<span id="cb77-3"><a href="#cb77-3"></a>  <span class="fu">as_survey_design</span>(<span class="at">weight =</span> wt, <span class="at">id =</span> ea) <span class="sc">%&gt;%</span></span>
-<span id="cb77-4"><a href="#cb77-4"></a>  <span class="fu">svyglm</span>(birth <span class="sc">~</span> z<span class="sc">*</span>urban, <span class="at">design =</span> ., <span class="at">family =</span> <span class="st">"quasibinomial"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb77-5"><a href="#cb77-5"></a>  <span class="fu">tidy</span>(<span class="at">exp =</span> <span class="cn">TRUE</span>, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb77-6"><a href="#cb77-6"></a>  <span class="fu">mutate</span>(<span class="at">sig =</span> gtools<span class="sc">::</span><span class="fu">stars.pval</span>(p.value))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1"></a><span class="co"># Weighted with cluster-robust SEs</span></span>
+<span id="cb79-2"><a href="#cb79-2"></a>pma_chirps <span class="sc">%&gt;%</span></span>
+<span id="cb79-3"><a href="#cb79-3"></a>  <span class="fu">as_survey_design</span>(<span class="at">weight =</span> wt, <span class="at">id =</span> ea) <span class="sc">%&gt;%</span></span>
+<span id="cb79-4"><a href="#cb79-4"></a>  <span class="fu">svyglm</span>(birth <span class="sc">~</span> z<span class="sc">*</span>urban, <span class="at">design =</span> ., <span class="at">family =</span> <span class="st">"quasibinomial"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb79-5"><a href="#cb79-5"></a>  <span class="fu">tidy</span>(<span class="at">exp =</span> <span class="cn">TRUE</span>, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb79-6"><a href="#cb79-6"></a>  <span class="fu">mutate</span>(<span class="at">sig =</span> gtools<span class="sc">::</span><span class="fu">stars.pval</span>(p.value))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 8
   term        estimate std.error statistic  p.value conf.low conf.high sig  
@@ -4818,12 +4877,12 @@ Geodetic CRS:  WGS 84
 <section id="multilevel-model-with-ea-random-effects" class="slide level2">
 <h2>Multilevel model with EA random effects</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1"></a><span class="fu">glmer</span>(</span>
-<span id="cb79-2"><a href="#cb79-2"></a>  birth <span class="sc">~</span> z<span class="sc">*</span>urban <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> ea), </span>
-<span id="cb79-3"><a href="#cb79-3"></a>  <span class="at">data =</span> pma_chirps,</span>
-<span id="cb79-4"><a href="#cb79-4"></a>  <span class="at">family =</span> <span class="st">"binomial"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb79-5"><a href="#cb79-5"></a>  <span class="fu">tidy</span>(<span class="at">exp =</span> <span class="cn">TRUE</span>, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb79-6"><a href="#cb79-6"></a>  <span class="fu">mutate</span>(<span class="at">sig =</span> gtools<span class="sc">::</span><span class="fu">stars.pval</span>(p.value))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1"></a><span class="fu">glmer</span>(</span>
+<span id="cb81-2"><a href="#cb81-2"></a>  birth <span class="sc">~</span> z<span class="sc">*</span>urban <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> ea), </span>
+<span id="cb81-3"><a href="#cb81-3"></a>  <span class="at">data =</span> pma_chirps,</span>
+<span id="cb81-4"><a href="#cb81-4"></a>  <span class="at">family =</span> <span class="st">"binomial"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb81-5"><a href="#cb81-5"></a>  <span class="fu">tidy</span>(<span class="at">exp =</span> <span class="cn">TRUE</span>, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb81-6"><a href="#cb81-6"></a>  <span class="fu">mutate</span>(<span class="at">sig =</span> gtools<span class="sc">::</span><span class="fu">stars.pval</span>(p.value))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 10
   effect   group term            estimate std.error statistic   p.value conf.low conf.high sig  

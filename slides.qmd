@@ -32,15 +32,15 @@ format:
 ## Data and Research Question {.center}
 
 ::: {.columns}
-:::: {.column width="60%"}
+:::: {.column width="50%"}
 ::::: {.fragment .fade-in-then-semi-out}
 IPUMS PMA: Fertility outcomes for women in Burkina Faso 
 :::::
 ::::: {.fragment .fade-in-then-semi-out}
-GPS coordinates for each PMA sample cluster
+Toy GPS data: coordinates for each PMA sample cluster
 :::::
 ::::: {.fragment .fade-in-then-semi-out}
-CHIRPS: Cumulative seasonal rainfall accumulation for each PMA sample cluster 
+CHIRPS: Rainfall accumulation relative to local averages 
 :::::
 ::::: {.fragment .fade-in}
 <p style='color: #98579B'>
@@ -48,7 +48,7 @@ Do rainfall conditions influence women's short-term family planning decisions?
 </p>
 :::::
 ::::
-:::: {.column width="40%"}
+:::: {.column width="50%"}
 ![](images/goals.png){.absolute height=400}
 ::::
 ::: 
@@ -60,10 +60,9 @@ Do rainfall conditions influence women's short-term family planning decisions?
 
 ```{r}
 knitr::opts_chunk$set(echo = TRUE)
-library(kableExtra)
 ```
 
-Follow [these steps]() to obtain today's code & publicly available data
+Follow [these steps](https://github.com/matt-gunther/ined-pma-2022) to obtain today's code & publicly available data
 
 Copy the following code chunks into R to load required packages<br>
 (Hint: click the clipboard icon inside each chunk to "copy all")
@@ -107,18 +106,34 @@ library(broom.mixed)
 
 
 
-## Downloading IPUMS PMA data
+## Downloading IPUMS PMA data {.center .nonincremental}
 
-::: {style="text-align: center; margin-top: 1em"}
-![](images/pma/home.png){height="500"}
+::: {.columns}
+:::: {.column width="50%"}
+![](images/pma/home.png){}
+::::
+:::: {.column width="50%"}
+[Visit the IPUMS PMA data website](https://pma.ipums.org/pma/)
 
-[Download a data extract from IPUMS PMA ](https://pma.ipums.org/pma/)
+* Sample 
+  * Burkina Faso
+  * Longitudinal 
+  * Female Respondents Only
+* Variables 
+  * RESULTFQ
+  * PANELBIRTH
+  * PANELWEIGHT
+  * EAID
+  * URBAN 
+::::
 :::
 
 
 
 
 ## Load IPUMS PMA data into R
+
+You'll receive two files from IPUMS - put both in the `data` folder where `analysis.Rmd` is located.
 
 ::: {.fragment}
 ```{r, eval=FALSE}
@@ -147,6 +162,8 @@ pma
 
 ## Data format 
 
+We've selected `wide` format longitudinal data, so Phase 1 and Phase 2 data are stored in separate columns. 
+
 ::: {.fragment}
 ```{r, eval=F}
 pma %>% count(RESULTFQ_1, RESULTFQ_2)
@@ -158,6 +175,9 @@ pma %>% count(RESULTFQ_1, RESULTFQ_2)
 ```
 :::
 ::: {.fragment}
+
+Keep only women who completed the survey in *both* phases of the panel study.
+
 ```{r}
 # Keep only panel members from both phases 
 pma <- pma %>% filter(RESULTFQ_1 == 1 & RESULTFQ_2 == 1)
@@ -168,7 +188,12 @@ pma <- pma %>% filter(RESULTFQ_1 == 1 & RESULTFQ_2 == 1)
 
 
 
-# 2- GPS data 
+# Questions about IPUMS PMA data? {.center}
+
+
+
+
+# 2- PMA GPS data 
 
 
 
@@ -327,30 +352,10 @@ gps
 
 
 
-## Mapping GPS coordinates 
-
-::: {.fragment}
-```{r, eval=FALSE}
-ggplot() + 
-  layer_spatial(gps) + 
-  theme_minimal() 
-```
-:::
-::: {.fragment}
-```{r, echo=FALSE}
-ggplot() + 
-  layer_spatial(gps) + 
-  theme_minimal() 
-```
-:::
-
-
-
-
 ## Adding a Shapefile
 
 ::: {.fragment}
-We want to add a shapefile so we can see where each point lies on a map of Burkina Faso.
+We need a supplementary `shape` file to see where each point lies on a map of Burkina Faso.
 :::
 ::: {.fragment}
 You only need to specify the folder: R will locate the appropriate file.
@@ -368,24 +373,42 @@ shape
 
 
 
-## Mapping GPS coordinates with a Shapefile 
+
+
+
+
+## Mapping GPS coordinates {auto-animate=true}
 
 ::: {.fragment}
+```{r, eval=FALSE}
+ggplot() + 
+  layer_spatial(gps) + 
+  theme_minimal() 
+```
+:::
+::: {.fragment}
+```{r, echo=FALSE, fig.height=4}
+ggplot() + 
+  layer_spatial(gps) + 
+  theme_minimal() 
+```
+:::
+
+## Mapping GPS coordinates {auto-animate=true}
+
 ```{r, eval=FALSE, `code-line-numbers` = "3"}
 ggplot() + 
   layer_spatial(gps) + 
   layer_spatial(shape, alpha = 0) + 
   theme_minimal() 
 ```
-:::
-::: {.fragment}
+
 ```{r, echo=FALSE, fig.height=4, fig.align='center'}
 ggplot() + 
   layer_spatial(gps) + 
   layer_spatial(shape, alpha = 0) + 
   theme_minimal() 
 ```
-:::
 
 
 
@@ -408,23 +431,24 @@ Displacement does not cross admin 1 boundaries.
 
 
 
-## Meters on a Round Planet
+---
 
-::: {.columns}
-:::: {.column width="50%"}
-::::: {.fragment}
+::: {style="display: flex; align-items: center; height: 90%"}
+:::: {.columns }
+::::: {.column width="50%"}
+<h2>Meters on a Round Plant</h2>
+:::::: {.fragment}
 Remember: the `geometry` of our `gps` data is defined by arc-degrees, not meters.
+::::::
+:::::: {.fragment}
+<span style='color: #98579B'>If we tried to account displacement in meters without "flattening" our map, the length of one meter vary based on distance from the equator.</span>
+::::::
 :::::
-::::: {.fragment}
-<span style='color: #98579B'>If we tried to account displacement in meters without "flattening" our map, the length of one meter would change as you travel away from the equator. </span>
+::::: {.column width=50%}
 :::::
-::::
-:::: {.column width=50%}
-![](images/projection.gif){.absolute top=100 right=100 height=500}
 ::::
 :::
-
-
+![](images/projection.gif){.absolute top=0 right=50 height=600}
 
 
 ## Projection to Meters 
@@ -472,23 +496,60 @@ Now, `geometry` contains several points on the circumference of a round polygon.
 
 
 
-## Intersecting Regional Boundaries {auto-animate="true"}
+## Intersecting Regional Boundaries
 
-::: {.columns}
-:::: {.column width="40%"}
-::::: {.fragment}
+::: {style="display: flex; align-items: center; height: 90%"}
+:::: {.columns}
+::::: {.column width="40%"}
+:::::: {.fragment}
 In certain cases, a buffer may cross an admin 1 boundary in `shape`. 
-:::::
-::::: {.fragment}
+::::::
+:::::: {.fragment}
 For example, we'll look at enumeration area `854131009`
 
 ```{r}
 test_ea <- 854131009 
 ```
+::::::
+:::::
+::::: {.column width="60%"}
+:::::: {.fragment}
+```{r, echo = FALSE, fig.height=4, fig.width=4, fig.align='center'}
+ggplot() + 
+  layer_spatial(gps_buffer %>% filter(EAID == test_ea), alpha = 0) + 
+  layer_spatial(gps %>% filter(EAID == test_ea), color = "red") + 
+  annotation_spatial(shape, alpha = 0) + 
+  theme_minimal()
+```
+::::::
 :::::
 ::::
-:::: {.column width="60%"}
-::::: {.fragment}
+:::
+
+
+## Intersecting Regional Boundaries
+
+::: {style="display: flex; align-items: center; height: 90%"}
+:::: {.columns}
+::::: {.column width="40%"}
+In certain cases, a buffer may cross an admin 1 boundary in `shape`. 
+
+For example, we'll look at enumeration area `854131009`
+
+```{r}
+test_ea <- 854131009 
+```
+
+Keep only the segment containing the original centroid.
+
+```{r, eval = FALSE}
+gps_buffer <- gps_buffer %>% 
+  st_intersection(shape) %>% 
+  st_filter(gps)
+```
+
+:::::
+::::: {.column width="60%"}
 ```{r, echo = FALSE, fig.height=4, fig.width=4, fig.align='center'}
 ggplot() + 
   layer_spatial(gps_buffer %>% filter(EAID == test_ea), alpha = 0) + 
@@ -498,30 +559,31 @@ ggplot() +
 ```
 :::::
 ::::
-:::: {.fragment}
-Technically, we should only keep the segment containing the original centroid.
-
-```{r}
-gps_buffer <- gps_buffer %>% 
-  st_intersection(shape) %>% 
-  st_filter(gps)
-```
-::::
 :::
 
-## Intersecting Regional Boundaries {auto-animate="true" visibility="uncounted"}
 
-::: {.columns}
-:::: {.column width="40%"}
+## Intersecting Regional Boundaries
+
+::: {style="display: flex; align-items: center; height: 90%"}
+:::: {.columns}
+::::: {.column width="40%"}
 In certain cases, a buffer may cross an admin 1 boundary in `shape`. 
 
 For example, we'll look at enumeration area `854131009`
 
-```{r, eval = FALSE}
+```{r}
 test_ea <- 854131009 
 ```
-::::
-:::: {.column width="60%"}
+
+Keep only the segment containing the original centroid.
+
+```{r, eval = TRUE}
+gps_buffer <- gps_buffer %>% 
+  st_intersection(shape) %>% 
+  st_filter(gps)
+```
+:::::
+::::: {.column width="60%"}
 ```{r, echo = FALSE, fig.height=4, fig.width=4, fig.align='center'}
 ggplot() + 
   layer_spatial(gps_buffer %>% filter(EAID == test_ea), alpha = 0) + 
@@ -529,15 +591,10 @@ ggplot() +
   annotation_spatial(shape, alpha = 0) + 
   theme_minimal()
 ```
+:::::
 ::::
-Technically, we should only keep the segment containing the original centroid.
-
-```{r, eval = FALSE}
-gps_buffer <- gps_buffer %>% 
-  st_intersection(shape) %>% 
-  st_filter(gps)
-```
 :::
+
 
 
 
@@ -548,15 +605,25 @@ gps_buffer <- gps_buffer %>%
 Finally, we can return to our original CRS defined by arc-degrees. 
 :::: 
 :::: {.fragment}
-```{r,  fig.height=4, fig.align='center'}
+```{r}
 gps_buffer <- gps_buffer %>% st_transform(crs = 4326)
 shape <- shape %>% st_transform(crs = 4326)
+```
+::::
+:::: {.fragment}
+```{r,  fig.height=4, fig.align='center'}
+
 ggplot() + 
   layer_spatial(shape, alpha = 0) + 
   layer_spatial(gps_buffer, alpha = 0) + 
   theme_minimal()
 ```
 :::: 
+
+
+
+
+# Questions about PMA GPS Data
 
 
 
@@ -569,7 +636,10 @@ ggplot() +
 ## Birth outcomes for individuals
 
 ::: {.fragment .fade-in-then-semi-out}
-The variable [PANELBIRTH_2]() indicates whether each woman gave birth within the year that passed between Phase 1 and Phase 2 of the panel study.
+Now, we combine `pma` together with `gps_buffer`.
+:::
+::: {.fragment .fade-in-then-semi-out}
+The `pma` variable [PANELBIRTH_2]() indicates whether each woman gave birth within the year that passed between Phase 1 and Phase 2 of the panel study.
 :::
 
 ::: {.fragment .fade-in}
@@ -598,7 +668,7 @@ pma %>% count(PANELBIRTH_2 == 1)
 ## Birth outcomes by EA {auto-animate=true}
 
 ::: {.fragment .fade-in}
-Where are the enumeration areas with the largest proportion of women who gave birth?
+Where are the enumeration areas where more women gave birth than average? 
 :::
 ::: {.fragment .fade-in}
 ```{r}
@@ -618,7 +688,7 @@ ea_summary
 
 ## Birth outcomes by EA {auto-animate="true" visibility="uncounted"}
 
-Where are the enumeration areas with the largest proportion of women who gave birth?
+Where are the enumeration areas where more women gave birth than average?
 
 ```{r, `code-line-numbers` = "6-8"}
 ea_summary <- pma %>% 
@@ -637,7 +707,7 @@ ea_summary
 
 ## Birth outcomes by EA {auto-animate="true" visibility="uncounted"}
 
-Where are the enumeration areas with the largest proportion of women who gave birth?
+Where are the enumeration areas where more women gave birth than average?
 
 ```{r,  `code-line-numbers` = "8"}
 ea_summary <- pma %>% 
@@ -899,11 +969,10 @@ More efficiently, we'll apply the same `sum` function to *every* year in our lis
 ::: {.fragment}
 ```{r}
 chirps_seasonal_sum <- map(years, ~.x %>% sum)
-
-chirps_seasonal_sum
 ```
 ```{r, echo=FALSE}
 rm(years)
+chirps_seasonal_sum
 ```
 :::
 
@@ -1114,7 +1183,6 @@ ea_summary_z <- ea_summary_gps %>%
 ::: {.fragment}
 ```{r, echo=FALSE}
 ea_summary_z
-rm(chirps_z)
 ```
 :::
 

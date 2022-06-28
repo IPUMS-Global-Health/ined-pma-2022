@@ -70,7 +70,7 @@ pma <- pma %>% filter(RESULTFQ_1 == 1 & RESULTFQ_2 == 1)
 ```
 
 
-# 2- GPS data 
+# 2- PMA GPS data 
 
 ## Load PMA GPS data into R 
 
@@ -92,14 +92,6 @@ gps <- gps %>%
 gps
 ```
 
-## Mapping GPS coordinates 
-
-```{r}
-ggplot() + 
-  layer_spatial(gps) + 
-  theme_minimal() 
-```
-
 ## Adding a Shapefile
 
 ```{r}
@@ -111,6 +103,10 @@ shape
 ## Mapping GPS coordinates with a Shapefile 
 
 ```{r}
+ggplot() + 
+  layer_spatial(gps) + 
+  theme_minimal() 
+
 ggplot() + 
   layer_spatial(gps) + 
   layer_spatial(shape, alpha = 0) + 
