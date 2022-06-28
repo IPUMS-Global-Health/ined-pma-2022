@@ -236,7 +236,7 @@ ggplot() +
 ## Aggregation 
 
 ```{r, `code-line-numbers`="3-10"}
-years <- map(1981:2020, ~{
+years <- map(2001:2020, ~{
   yr <- .x
   months <- map(6:9, ~{
       list.files(
@@ -248,7 +248,7 @@ years <- map(1981:2020, ~{
   unlist(months) 
 })
 
-years <- set_names(years, 1981:2020) 
+years <- set_names(years, 2001:2020) 
 ```
 
 ## Raster Layers 
@@ -297,7 +297,7 @@ ggplot() +
     high = "#4375B7", 
     na.value = "transparent"
   ) + 
-  labs(fill = "Z-score (1981-2020)")
+  labs(fill = "Z-score (2001-2020)")
 ```
 
 

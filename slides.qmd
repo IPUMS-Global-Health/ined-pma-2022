@@ -883,46 +883,17 @@ ggplot() +
 Ultimately, you'll want to work with `.tif` images from *many* days at the same time. 
 :::
 ::: {.fragment}
-We'll exploit patterns in the name of each file to load all days from each year that fall within the Burkina Faso "rainy season" (June 1 - October 1). 
+For this workshop, I've removed all files outside of the range June 1 to Oct 1.
 :::
 ::: {.fragment}
 ```{r}
-years <- map(1981:2020, ~{
-  yr <- .x
+years <- map(2001:2020, ~{
+  list.files("data/chirps/", pattern = paste0("^", .x), full.names = TRUE)
 })
 
-years <- set_names(years, 1981:2020) 
+years <- set_names(years, 2001:2020) 
 ```
 :::
-::: {.fragment}
-```{r, echo = FALSE}
-years
-rm(years)
-```
-:::
-
-## Aggregation {auto-animate="true" visibility="uncounted"}
-
-Ultimately, you'll want to work with `.tif` images from *many* days at the same time. 
-
-We'll exploit patterns in the name of each file to load all days from each year that fall within the Burkina Faso "rainy season" (June 1 - October 1). 
-
-```{r, `code-line-numbers`="3-10"}
-years <- map(1981:2020, ~{
-  yr <- .x
-  months <- map(6:9, ~{
-      list.files(
-        "data/chirps",
-        full.names = TRUE,
-        pattern = paste0(yr, "0", .x, ".*tif")
-      ) 
-    })
-  unlist(months) 
-})
-
-years <- set_names(years, 1981:2020) 
-```
-
 ::: {.fragment}
 ```{r, echo = FALSE}
 years
@@ -995,7 +966,7 @@ chirps_seasonal_sum
 ```
 :::
 :::{.fragment}
-For every 0.05 degrees lat by 0.05 degree lon, we now have the **total seasonal rainfall accumulation** for every year 1981-2020.
+For every 0.05 degrees lat by 0.05 degree lon, we now have the **total seasonal rainfall accumulation** for every year 2001-2020.
 :::
 
 
@@ -1003,7 +974,7 @@ For every 0.05 degrees lat by 0.05 degree lon, we now have the **total seasonal 
 
 ## How rainy was 2020? {auto-animate=true}
 :::{.fragment}
-To answer this question, we'll compare total seasonal accumulation in 2020 to the 40-year average.
+To answer this question, we'll compare total seasonal accumulation in 2020 to the 20-year average.
 :::
 :::{.fragment}
 Here is the *average* seasonal rainfall accumulation for each pixel (across all years):
@@ -1041,7 +1012,7 @@ rm(june5_2020)
 
 ## 2020 Seasonal Rainfall Accumulation 
 
-Total accumulation relative to local 40-year average
+Total accumulation relative to local 20-year average
 
 ```{r, fig.align='center', `code-line-numbers` = "2"}
 ggplot() + 
@@ -1049,7 +1020,7 @@ ggplot() +
   layer_spatial(shape, alpha = 0) +
   theme_minimal() + 
   scale_fill_gradient2(low = "#D72B22", high = "#4375B7", na.value = "transparent") + 
-  labs(fill = "Z-score (1981-2020)")
+  labs(fill = "Z-score (2001-2020)")
 
 ```
 
@@ -1191,6 +1162,50 @@ ea_summary_z
 
 # 6 - Analysis
 
+```{r, echo = FALSE, eval=FALSE}
+# Custom font 
+library(showtext)
+sysfonts::font_add(
+  family = "cabrito", 
+  regular = "local/fonts/cabritosansnormregular-webfont.ttf"
+)
+showtext::showtext_auto()
+
+ggplot() + 
+  layer_spatial(mask(chirps_z$`2020`, vect(shape), touches = FALSE)) + 
+  layer_spatial(shape, alpha = 0) + 
+  layer_spatial(
+    ea_summary_gps %>% 
+      st_centroid() %>% 
+      mutate(many_births = if_else(
+        many_births,
+        "Above Median",
+        "Below Median"
+      )),
+    aes(shape = many_births), alpha = 0.6, size = 2
+  ) + 
+  theme_minimal() %+replace% 
+  theme(
+    text = element_text(family = "cabrito", size = 13),
+    plot.title = element_text(size = 22, color = "#00263A",
+    hjust = 0, margin = margin(b = 5)),
+    plot.subtitle = element_text(hjust = 0, margin = margin(b = 10)),
+    strip.background = element_blank(),
+    strip.text.y = element_text(size = 16, angle = 0),
+    panel.spacing = unit(1, "lines"),
+    axis.title.y = element_text(angle = 0, margin = margin(r = 10))
+  ) +  
+  scale_fill_gradient2(
+    low = "#D72B22", high = "#4375B7", na.value = "transparent"
+  ) + 
+  labs(
+    fill = "Z-score \n(2001-2020)",
+    shape = "Enumeration Area \nBirth Rate",
+    title = "2020 Births vs Seasonal Rainfall Accumulation in Burkina Faso",
+    subtitle = "Total rainfall June 1 to October 1 vs mean seasonal total 2001-2020"
+  ) 
+
+```
 
 
 
