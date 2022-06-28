@@ -9,7 +9,7 @@
 <link href="slides_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-0.9.592">
 
-  <title>quarto-inpute897936b</title>
+  <title>quarto-input216686f7</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -1031,7 +1031,7 @@ Projected CRS: WGS 84 / UTM zone 30N
 </div>
 </section></section>
 <section id="questions-about-pma-gps-data" class="title-slide slide level1 center">
-<h1>Questions about PMA GPS Data</h1>
+<h1>Questions about PMA GPS Data?</h1>
 
 </section>
 
@@ -1230,7 +1230,10 @@ Geodetic CRS:  WGS 84
 <span id="cb40-4"><a href="#cb40-4"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="slides_files/figure-revealjs/unnamed-chunk-45-1.png" width="960" class="r-stretch quarto-figure-center"></section></section>
+<img data-src="slides_files/figure-revealjs/unnamed-chunk-45-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="questions-about-mapping" class="slide level2">
+<h2>Questions about mapping?</h2>
+</section></section>
 <section>
 <section id="chirps-annual-rainfall-summary" class="title-slide slide level1 center">
 <h1>4 - CHIRPS: Annual rainfall summary</h1>
@@ -2983,7 +2986,10 @@ max values  : 1.6021578, 1.8960675, 3.2768042, 0.9467555, 2.5081893, 1.5739420, 
 <span id="cb62-6"><a href="#cb62-6"></a>  <span class="fu">labs</span>(<span class="at">fill =</span> <span class="st">"Z-score (2001-2020)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="slides_files/figure-revealjs/unnamed-chunk-65-1.png" width="960" class="r-stretch quarto-figure-center"></section></section>
+<img data-src="slides_files/figure-revealjs/unnamed-chunk-65-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="questions-about-chirps-raster-data" class="slide level2">
+<h2>Questions about CHIRPS raster data?</h2>
+</section></section>
 <section>
 <section id="bringing-it-all-together" class="title-slide slide level1 center">
 <h1>5 - Bringing it All Together</h1>
@@ -3164,26 +3170,62 @@ Geodetic CRS:  WGS 84
 </div>
 </div>
 </div>
-</section></section>
-<section>
-<section id="analysis" class="title-slide slide level1 center">
-<h1>6 - Analysis</h1>
-<div class="cell">
-
-</div>
 </section>
-<section id="join-z-scores-with-original-pma-data" class="slide level2">
-<h2>Join Z-scores with Original PMA Data</h2>
+<section id="merging-z-scores-with-pma-data" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Merging Z-scores with PMA data</h2>
+<div class="fragment">
+<p>We’ll use <code>transmute</code> to select a handful of variables from <code>pma</code> to use in our analysis.</p>
+</div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1"></a>pma_chirps <span class="ot">&lt;-</span> pma <span class="sc">%&gt;%</span> </span>
-<span id="cb75-2"><a href="#cb75-2"></a>  <span class="fu">transmute</span>(</span>
-<span id="cb75-3"><a href="#cb75-3"></a>    <span class="at">ea =</span> EAID_1, </span>
-<span id="cb75-4"><a href="#cb75-4"></a>    <span class="at">wt =</span> PANELWEIGHT,</span>
-<span id="cb75-5"><a href="#cb75-5"></a>    <span class="at">birth =</span> PANELBIRTH_2 <span class="sc">==</span> <span class="dv">1</span>,</span>
-<span id="cb75-6"><a href="#cb75-6"></a>    <span class="at">urban =</span> URBAN <span class="sc">==</span> <span class="dv">1</span></span>
-<span id="cb75-7"><a href="#cb75-7"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb75-8"><a href="#cb75-8"></a>  <span class="fu">left_join</span>(ea_summary_z, <span class="at">by =</span> <span class="st">"ea"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb75-1" class="hljs-ln-code"><a href="#cb75-1"></a>pma_chirps <span class="ot">&lt;-</span> pma <span class="sc">%&gt;%</span> </span>
+<span id="cb75-2" class="hljs-ln-code"><a href="#cb75-2"></a>  <span class="fu">transmute</span>(</span>
+<span id="cb75-3" class="hljs-ln-code"><a href="#cb75-3"></a>    <span class="at">ea =</span> EAID_1, </span>
+<span id="cb75-4" class="hljs-ln-code"><a href="#cb75-4"></a>    <span class="at">wt =</span> PANELWEIGHT,</span>
+<span id="cb75-5" class="hljs-ln-code"><a href="#cb75-5"></a>    <span class="at">birth =</span> PANELBIRTH_2 <span class="sc">==</span> <span class="dv">1</span>,</span>
+<span id="cb75-6" class="hljs-ln-code"><a href="#cb75-6"></a>    <span class="at">urban =</span> URBAN <span class="sc">==</span> <span class="dv">1</span></span>
+<span id="cb75-7" class="hljs-ln-code"><a href="#cb75-7"></a>  ) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5,487 × 4
+          ea    wt birth urban
+       &lt;dbl&gt; &lt;dbl&gt; &lt;lgl&gt; &lt;lgl&gt;
+ 1 854111005 2.50  TRUE  FALSE
+ 2 854111004 2.61  TRUE  FALSE
+ 3 854161007 3.21  FALSE FALSE
+ 4 854141008 0.538 FALSE TRUE 
+ 5 854191022 0.358 FALSE FALSE
+ 6 854141002 3.20  FALSE FALSE
+ 7 854131034 0.404 FALSE TRUE 
+ 8 854191036 0.314 TRUE  FALSE
+ 9 854121003 0.337 FALSE TRUE 
+10 854231003 2.55  FALSE FALSE
+# … with 5,477 more rows</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="merging-z-scores-with-pma-data-1" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Merging Z-scores with PMA data</h2>
+<p>We’ll use <code>transmute</code> to select a handful of variables from <code>pma</code> to use in our analysis.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1"></a>pma_chirps <span class="ot">&lt;-</span> pma <span class="sc">%&gt;%</span> </span>
+<span id="cb77-2"><a href="#cb77-2"></a>  <span class="fu">transmute</span>(</span>
+<span id="cb77-3"><a href="#cb77-3"></a>    <span class="at">ea =</span> EAID_1, </span>
+<span id="cb77-4"><a href="#cb77-4"></a>    <span class="at">wt =</span> PANELWEIGHT,</span>
+<span id="cb77-5"><a href="#cb77-5"></a>    <span class="at">birth =</span> PANELBIRTH_2 <span class="sc">==</span> <span class="dv">1</span>,</span>
+<span id="cb77-6"><a href="#cb77-6"></a>    <span class="at">urban =</span> URBAN <span class="sc">==</span> <span class="dv">1</span></span>
+<span id="cb77-7"><a href="#cb77-7"></a>  ) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="fragment">
+<p>Another <code>full_join</code> allows us to merge <code>ea_summary_z</code> for each woman’s enumeration area.</p>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1"></a>pma_chirps <span class="ot">&lt;-</span> pma_chirps <span class="sc">%&gt;%</span> <span class="fu">full_join</span>(ea_summary_z, <span class="at">by =</span> <span class="st">"ea"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
@@ -3207,35 +3249,17 @@ Geodetic CRS:  WGS 84
 </div>
 </div>
 </section>
-<section id="binomial-model-with-cluster-robust-ses" class="slide level2">
-<h2>Binomial model with cluster-robust SEs</h2>
+<section id="z-scores-in-hierarchical-models" class="slide level2">
+<h2>Z-scores in hierarchical models</h2>
+<p>The <code>lme4</code> package allows us to build a hierarchical model with EA random effects.</p>
+<p>For example, a simple model interacting rainfall with <code>urban</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1"></a><span class="co"># Weighted with cluster-robust SEs</span></span>
-<span id="cb77-2"><a href="#cb77-2"></a>pma_chirps <span class="sc">%&gt;%</span></span>
-<span id="cb77-3"><a href="#cb77-3"></a>  <span class="fu">as_survey_design</span>(<span class="at">weight =</span> wt, <span class="at">id =</span> ea) <span class="sc">%&gt;%</span></span>
-<span id="cb77-4"><a href="#cb77-4"></a>  <span class="fu">svyglm</span>(birth <span class="sc">~</span> z<span class="sc">*</span>urban, <span class="at">design =</span> ., <span class="at">family =</span> <span class="st">"quasibinomial"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb77-5"><a href="#cb77-5"></a>  <span class="fu">tidy</span>(<span class="at">exp =</span> <span class="cn">TRUE</span>, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb77-6"><a href="#cb77-6"></a>  <span class="fu">mutate</span>(<span class="at">sig =</span> gtools<span class="sc">::</span><span class="fu">stars.pval</span>(p.value))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 4 × 8
-  term        estimate std.error statistic  p.value conf.low conf.high sig  
-  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;
-1 (Intercept)    0.172    0.167    -10.6   3.29e-20    0.124     0.239 "***"
-2 z              1.21     0.0894     2.12  3.55e- 2    1.01      1.44  "*"  
-3 urbanTRUE      0.868    0.229     -0.616 5.39e- 1    0.552     1.37  " "  
-4 z:urbanTRUE    0.736    0.180     -1.70  9.06e- 2    0.515     1.05  "."  </code></pre>
-</div>
-</div>
-</section>
-<section id="multilevel-model-with-ea-random-effects" class="slide level2">
-<h2>Multilevel model with EA random effects</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1"></a><span class="fu">glmer</span>(</span>
-<span id="cb79-2"><a href="#cb79-2"></a>  birth <span class="sc">~</span> z<span class="sc">*</span>urban <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> ea), </span>
-<span id="cb79-3"><a href="#cb79-3"></a>  <span class="at">data =</span> pma_chirps,</span>
-<span id="cb79-4"><a href="#cb79-4"></a>  <span class="at">family =</span> <span class="st">"binomial"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb79-5"><a href="#cb79-5"></a>  <span class="fu">tidy</span>(<span class="at">exp =</span> <span class="cn">TRUE</span>, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb79-6"><a href="#cb79-6"></a>  <span class="fu">mutate</span>(<span class="at">sig =</span> gtools<span class="sc">::</span><span class="fu">stars.pval</span>(p.value))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1"></a><span class="fu">glmer</span>(</span>
+<span id="cb80-2"><a href="#cb80-2"></a>  birth <span class="sc">~</span> z<span class="sc">*</span>urban <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> ea), </span>
+<span id="cb80-3"><a href="#cb80-3"></a>  <span class="at">data =</span> pma_chirps,</span>
+<span id="cb80-4"><a href="#cb80-4"></a>  <span class="at">family =</span> <span class="st">"binomial"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb80-5"><a href="#cb80-5"></a>  <span class="fu">tidy</span>(<span class="at">exp =</span> <span class="cn">TRUE</span>, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb80-6"><a href="#cb80-6"></a>  <span class="fu">mutate</span>(<span class="at">sig =</span> gtools<span class="sc">::</span><span class="fu">stars.pval</span>(p.value))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 10
   effect   group term            estimate std.error statistic   p.value conf.low conf.high sig  
@@ -3246,6 +3270,61 @@ Geodetic CRS:  WGS 84
 4 fixed    &lt;NA&gt;  z:urbanTRUE        0.635    0.124     -2.32   2.01e- 2    0.433     0.931 "*"  
 5 ran_pars ea    sd__(Intercept)    0.265   NA         NA     NA          NA        NA     ""   </code></pre>
 </div>
+</div>
+<p>No controls, but we do so see some evidence that a wetter rainy season might increase odds for a <code>birth</code> that year.</p>
+</section>
+<section id="survey-weights" class="slide level2">
+<h2>Survey weights</h2>
+<p><code>lme4</code> does not provide a nice way to incorporate survey weights (inverse selection probability).</p>
+<p>Instead, you might consider the <code>survey</code> package for weights and in a logit model with cluster-robust SEs.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1"></a>pma_chirps <span class="sc">%&gt;%</span></span>
+<span id="cb82-2"><a href="#cb82-2"></a>  <span class="fu">as_survey_design</span>(<span class="at">weight =</span> wt, <span class="at">id =</span> ea) <span class="sc">%&gt;%</span></span>
+<span id="cb82-3"><a href="#cb82-3"></a>  <span class="fu">svyglm</span>(birth <span class="sc">~</span> z<span class="sc">*</span>urban, <span class="at">design =</span> ., <span class="at">family =</span> <span class="st">"quasibinomial"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb82-4"><a href="#cb82-4"></a>  <span class="fu">tidy</span>(<span class="at">exp =</span> <span class="cn">TRUE</span>, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb82-5"><a href="#cb82-5"></a>  <span class="fu">mutate</span>(<span class="at">sig =</span> gtools<span class="sc">::</span><span class="fu">stars.pval</span>(p.value))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 8
+  term        estimate std.error statistic  p.value conf.low conf.high sig  
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;
+1 (Intercept)    0.172    0.167    -10.6   3.29e-20    0.124     0.239 "***"
+2 z              1.21     0.0894     2.12  3.55e- 2    1.01      1.44  "*"  
+3 urbanTRUE      0.868    0.229     -0.616 5.39e- 1    0.552     1.37  " "  
+4 z:urbanTRUE    0.736    0.180     -1.70  9.06e- 2    0.515     1.05  "."  </code></pre>
+</div>
+</div>
+<p>Similar results: some evidence that a wetter rainy season might increase odds for a <code>birth</code> that year.</p>
+</section>
+<section id="some-other-things-to-consider" class="slide level2">
+<h2>Some other things to consider</h2>
+<ul>
+<li class="fragment">When does rainfall occur relative to conception?</li>
+<li class="fragment">What is the relevant comparison period? (CHRIPS data are available from 1981)</li>
+<li class="fragment">Does the rainy season vary across the study area?</li>
+<li class="fragment">How does rainfall interact with temperature, vegetation, and local livelihoods?</li>
+</ul>
+<div class="fragment">
+<p>Technical issues:</p>
+<ul>
+<li class="fragment">Should I store climate data locally, or access through a server? (Check out the <a href="https://docs.ropensci.org/chirps/">CHIRPS API</a> package for R!)</li>
+<li class="fragment">How much memory does R need to process my analysis? Can I break it up into pieces, or use parallel processing?</li>
+</ul>
+</div>
+</section>
+<section id="resources" class="slide level2">
+<h2>Resources</h2>
+<ul>
+<li class="fragment"><a href="https://r-spatial.org/">r-spatial</a> - blog from the authors of <a href="https://r-spatial.github.io/sf/index.html">sf</a></li>
+<li class="fragment"><a href="https://rspatial.org/terra/index.html">rspatial</a> - blog from the authors of <a href="https://rspatial.github.io/terra/index.html">terra</a></li>
+<li class="fragment"><a href="https://tech.popdata.org/pma-data-hub/">PMA Data Analysis Hub</a> - our blog!</li>
+<li class="fragment"><a href="https://www.ipums.org/">IPUMS.org</a> (and <a href="https://globalhealth.ipums.org/">IPUMS Global Health</a> in particular)</li>
+<li class="fragment">Find us on Twitter: <a href="https://twitter.com/ipumsGH"><span class="citation" data-cites="ipumsGH">@ipumsGH</span></a></li>
+</ul>
+<div class="fragment">
+<p>Thank you!</p>
+</div>
+<div class="cell">
+
 </div>
 <div class="cell">
 

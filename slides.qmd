@@ -623,7 +623,7 @@ ggplot() +
 
 
 
-# Questions about PMA GPS Data
+# Questions about PMA GPS Data?
 
 
 
@@ -761,6 +761,11 @@ ggplot() +
   layer_spatial(shape, alpha = 0) + 
   theme_minimal()
 ```
+
+
+
+
+## Questions about mapping?
 
 
 
@@ -1027,6 +1032,11 @@ ggplot() +
 
 
 
+## Questions about CHIRPS raster data? 
+
+
+
+
 # 5 - Bringing it All Together 
 
 
@@ -1160,7 +1170,136 @@ ea_summary_z
 
 
 
-# 6 - Analysis
+## Merging Z-scores with PMA data {auto-animate="true"}
+
+::: {.fragment}
+We'll use `transmute` to select a handful of variables from `pma` to use in our analysis.
+:::
+::: {.fragment}
+```{r}
+pma_chirps <- pma %>% 
+  transmute(
+    ea = EAID_1, 
+    wt = PANELWEIGHT,
+    birth = PANELBIRTH_2 == 1,
+    urban = URBAN == 1
+  ) 
+```
+:::
+::: {.fragment}
+```{r, echo=F}
+pma_chirps
+knitr::opts_chunk$set(R.options = list(width = 150))
+```
+:::
+
+## Merging Z-scores with PMA data {auto-animate="true"}
+
+We'll use `transmute` to select a handful of variables from `pma` to use in our analysis.
+
+```{r}
+pma_chirps <- pma %>% 
+  transmute(
+    ea = EAID_1, 
+    wt = PANELWEIGHT,
+    birth = PANELBIRTH_2 == 1,
+    urban = URBAN == 1
+  ) 
+```
+
+::: {.fragment}
+Another `full_join` allows us to merge `ea_summary_z` for each woman's enumeration area.  
+:::
+::: {.fragment}
+```{r}
+pma_chirps <- pma_chirps %>% full_join(ea_summary_z, by = "ea") 
+```
+:::
+::: {.fragment}
+```{r, echo=F}
+pma_chirps
+```
+:::
+
+
+
+
+## Z-scores in hierarchical models
+
+The `lme4` package allows us to build a hierarchical model with EA random effects. 
+
+For example, a simple model interacting rainfall with `urban`: 
+
+```{r}
+glmer(
+  birth ~ z*urban + (1 | ea), 
+  data = pma_chirps,
+  family = "binomial") %>%
+  tidy(exp = TRUE, conf.int = TRUE) %>%
+  mutate(sig = gtools::stars.pval(p.value))
+```
+
+No controls, but we do so see some evidence that a wetter rainy season might increase odds for a `birth` that year.
+
+
+
+## Survey weights 
+
+`lme4`  does not provide a nice way to incorporate survey weights (inverse selection probability). 
+
+Instead, you might consider the `survey` package for weights and in a logit model with cluster-robust SEs.
+
+```{r}
+pma_chirps %>%
+  as_survey_design(weight = wt, id = ea) %>%
+  svyglm(birth ~ z*urban, design = ., family = "quasibinomial") %>%
+  tidy(exp = TRUE, conf.int = TRUE) %>%
+  mutate(sig = gtools::stars.pval(p.value))
+```
+
+Similar results: some evidence that a wetter rainy season might increase odds for a `birth` that year.
+
+
+
+
+## Some other things to consider 
+
+* When does rainfall occur relative to conception? 
+* What is the relevant comparison period? (CHRIPS data are available from 1981)
+* Does the rainy season vary across the study area? 
+* How does rainfall interact with temperature, vegetation, and local livelihoods?
+
+::: {.fragment}
+Technical issues: 
+
+* Should I store climate data locally, or access through a server? (Check out the [CHIRPS API](https://docs.ropensci.org/chirps/) package for R!)
+* How much memory does R need to process my analysis? Can I break it up into pieces, or use parallel processing? 
+:::
+
+## Resources 
+
+* [r-spatial](https://r-spatial.org/) - blog from the authors of [sf](https://r-spatial.github.io/sf/index.html)
+* [rspatial](https://rspatial.org/terra/index.html) - blog from the authors of [terra](https://rspatial.github.io/terra/index.html)
+* [PMA Data Analysis Hub](https://tech.popdata.org/pma-data-hub/) - our blog! 
+* [IPUMS.org](https://www.ipums.org/) (and [IPUMS Global Health](https://globalhealth.ipums.org/) in particular)
+* Find us on Twitter: [@ipumsGH](https://twitter.com/ipumsGH)
+
+::: {.fragment}
+Thank you! 
+:::
+
+```{r, echo=FALSE, eval=FALSE}
+# Weighted with EA random effects ??? Does not match Stata 
+pma_chirps2 <- parameters::rescale_weights(pma_chirps, "ea", "wt")
+glmer(
+  birth ~ Z*urban + (1 | ea), 
+  weights = pweights_a,
+  data = pma_chirps2,
+  family = "binomial") %>%
+  tidy(exp = TRUE, conf.int = TRUE) %>%
+  mutate(sig = gtools::stars.pval(p.value))
+```
+
 
 ```{r, echo = FALSE, eval=FALSE}
 # Custom font 
@@ -1205,69 +1344,4 @@ ggplot() +
     subtitle = "Total rainfall June 1 to October 1 vs mean seasonal total 2001-2020"
   ) 
 
-```
-
-
-
-## Join Z-scores with Original PMA Data 
-
-::: {.fragment}
-```{r}
-pma_chirps <- pma %>% 
-  transmute(
-    ea = EAID_1, 
-    wt = PANELWEIGHT,
-    birth = PANELBIRTH_2 == 1,
-    urban = URBAN == 1
-  ) %>% 
-  left_join(ea_summary_z, by = "ea") 
-```
-:::
-::: {.fragment}
-```{r, echo=F}
-pma_chirps
-
-knitr::opts_chunk$set(R.options = list(width = 150))
-```
-:::
-
-
-
-
-## Binomial model with cluster-robust SEs
-
-```{r}
-# Weighted with cluster-robust SEs
-pma_chirps %>%
-  as_survey_design(weight = wt, id = ea) %>%
-  svyglm(birth ~ z*urban, design = ., family = "quasibinomial") %>%
-  tidy(exp = TRUE, conf.int = TRUE) %>%
-  mutate(sig = gtools::stars.pval(p.value))
-```
-
-
-
-
-## Multilevel model with EA random effects 
-
-```{r}
-glmer(
-  birth ~ z*urban + (1 | ea), 
-  data = pma_chirps,
-  family = "binomial") %>%
-  tidy(exp = TRUE, conf.int = TRUE) %>%
-  mutate(sig = gtools::stars.pval(p.value))
-```
-
-
-```{r, echo=FALSE, eval=FALSE}
-# Weighted with EA random effects ??? Does not match Stata 
-pma_chirps2 <- parameters::rescale_weights(pma_chirps, "ea", "wt")
-glmer(
-  birth ~ Z*urban + (1 | ea), 
-  weights = pweights_a,
-  data = pma_chirps2,
-  family = "binomial") %>%
-  tidy(exp = TRUE, conf.int = TRUE) %>%
-  mutate(sig = gtools::stars.pval(p.value))
 ```
