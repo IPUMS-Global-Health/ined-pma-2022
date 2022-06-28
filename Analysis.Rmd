@@ -52,8 +52,8 @@ library(broom)
 
 ```{r, results='hide'}
 pma <- read_ipums_micro(
-  ddi = "data/pma_00136.xml", # Use your own file name here 
-  data = "data/pma_00136.dat.gz" # Use your own file name here 
+  ddi = "local/data/pma_00136.xml", # Use your own file name here 
+  data = "local/data/pma_00136.dat.gz" # Use your own file name here 
 )
 ```
 
@@ -237,15 +237,7 @@ ggplot() +
 
 ```{r, `code-line-numbers`="3-10"}
 years <- map(2001:2020, ~{
-  yr <- .x
-  months <- map(6:9, ~{
-      list.files(
-        "data/chirps",
-        full.names = TRUE,
-        pattern = paste0(yr, "0", .x, ".*tif")
-      ) 
-    })
-  unlist(months) 
+  list.files("data/chirps/", pattern = paste0("^", .x), full.names = TRUE)
 })
 
 years <- set_names(years, 2001:2020) 
