@@ -62,10 +62,9 @@ Do rainfall conditions influence women's short-term family planning decisions?
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Follow [these steps](https://github.com/matt-gunther/ined-pma-2022) to obtain today's code & publicly available data
+Follow [these steps](https://github.com/matt-gunther/ined-pma-2022) to obtain today's code & publicly available data.
 
-Copy the following code chunks into R to load required packages<br>
-(Hint: click the clipboard icon inside each chunk to "copy all")
+Open `analysis.rmd` and begin following along with these code chunks
 
 ::: {.columns}
 :::: {.column width="48%"}
@@ -120,11 +119,11 @@ library(broom.mixed)
   * Longitudinal 
   * Female Respondents Only
 * Variables 
-  * RESULTFQ
-  * PANELBIRTH
-  * PANELWEIGHT
-  * EAID
-  * URBAN 
+  * [RESULTFQ](https://pma.ipums.org/pma-action/variables/RESULTFQ)
+  * [PANELBIRTH](https://pma.ipums.org/pma-action/variables/PANELBIRTH)
+  * [PANELWEIGHT](https://pma.ipums.org/pma-action/variables/PANELWEIGHT)
+  * [EAID](https://pma.ipums.org/pma-action/variables/EAID)
+  * [URBAN](https://pma.ipums.org/pma-action/variables/URBAN)
 ::::
 :::
 
@@ -243,7 +242,7 @@ PMA uses spatially referenced sample clusters - called "enumeration areas" (EAs)
 
 At the beginning of the panel study, 35 households were randomly selected within each EA.
 
-IPUMS PMA does not disseminate the GPS coordinates for EAs, but you may [apply here]() for access directly from PMA.
+IPUMS PMA does not disseminate the GPS coordinates for EAs, but you may [apply here](https://www.pmadata.org/data/request-access-datasets) for access directly from PMA.
 </div>
 
 Today, we'll be using **falsified** GPS coordinates as an example. 
@@ -263,7 +262,7 @@ PMA uses spatially referenced sample clusters - called "enumeration areas" (EAs)
 
 At the beginning of the panel study, 35 households were randomly selected within each EA.
 
-IPUMS PMA does not disseminate the GPS coordinates for EAs, but you may [apply here]() for access directly from PMA.
+IPUMS PMA does not disseminate the GPS coordinates for EAs, but you may [apply here](https://www.pmadata.org/data/request-access-datasets) for access directly from PMA.
 
 Today, we'll be using **falsified** GPS coordinates as an example. 
 </div>
@@ -639,7 +638,7 @@ ggplot() +
 Now, we combine `pma` together with `gps_buffer`.
 :::
 ::: {.fragment .fade-in-then-semi-out}
-The `pma` variable [PANELBIRTH_2]() indicates whether each woman gave birth within the year that passed between Phase 1 and Phase 2 of the panel study.
+The `pma` variable [PANELBIRTH_2](https://pma.ipums.org/pma-action/variables/PANELBIRTH) indicates whether each woman gave birth within the year that passed between Phase 1 and Phase 2 of the panel study.
 :::
 
 ::: {.fragment .fade-in}
@@ -814,7 +813,7 @@ For CHRIPS, each pixel represents mm rainfall in an area 0.05 degrees longitude 
 
 ::: {.columns}
 :::: {.column width="75%"}
-The [terra]() package reads Raster files. 
+The [terra](https://rspatial.github.io/terra/index.html) package reads Raster files. 
 
 You *could* simply read the data from a single day, and map the result. 
 
@@ -1046,12 +1045,15 @@ ggplot() +
 
 ::: {.columns}
 :::: {.column width=60%"}
+::::: {.fragment}
 Remember our example EA? It overlaps 8 CHIRPS pixels.
 
 ```{r, results='hide'}
 test_buffer <- ea_summary_gps %>% 
   filter(ea == test_ea)
 ```
+:::::
+::::: {.fragment}
 ```{r, eval = FALSE}
 ggplot() + 
   layer_spatial(
@@ -1065,8 +1067,10 @@ ggplot() +
     limits = c(0, 2)
   )
 ```
+:::::
 ::::
 :::: {.column width="40%"}
+::::: {.fragment}
 ```{r, echo=FALSE, fig.height=7, fig.width=7}
 ggplot() + 
   layer_spatial(chirps_z$`2020` %>% crop(test_buffer, snap = "out")) + 
@@ -1074,6 +1078,7 @@ ggplot() +
   theme_minimal() + 
   scale_fill_gradient2(high = "#4375B7", limits = c(0, 2))
 ```
+:::::
 ::::
 :::
 
@@ -1226,10 +1231,12 @@ pma_chirps
 
 ## Z-scores in hierarchical models
 
+::: {.fragment}
 The `lme4` package allows us to build a hierarchical model with EA random effects. 
 
 For example, a simple model interacting rainfall with `urban`: 
-
+:::
+::: {.fragment}
 ```{r}
 glmer(
   birth ~ z*urban + (1 | ea), 
@@ -1240,15 +1247,17 @@ glmer(
 ```
 
 No controls, but we do so see some evidence that a wetter rainy season might increase odds for a `birth` that year.
-
+:::
 
 
 ## Survey weights 
 
+::: {.fragment}
 `lme4`  does not provide a nice way to incorporate survey weights (inverse selection probability). 
 
 Instead, you might consider the `survey` package for weights and in a logit model with cluster-robust SEs.
-
+:::
+::: {.fragment}
 ```{r}
 pma_chirps %>%
   as_survey_design(weight = wt, id = ea) %>%
@@ -1258,7 +1267,7 @@ pma_chirps %>%
 ```
 
 Similar results: some evidence that a wetter rainy season might increase odds for a `birth` that year.
-
+:::
 
 
 

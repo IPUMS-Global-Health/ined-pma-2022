@@ -9,7 +9,7 @@
 <link href="slides_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-0.9.592">
 
-  <title>quarto-input216686f7</title>
+  <title>quarto-input8dd160ce</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -426,8 +426,8 @@ Do rainfall conditions influence women’s short-term family planning decisions?
 <div class="cell">
 
 </div>
-<p>Follow <a href="https://github.com/matt-gunther/ined-pma-2022">these steps</a> to obtain today’s code &amp; publicly available data</p>
-<p>Copy the following code chunks into R to load required packages<br> (Hint: click the clipboard icon inside each chunk to “copy all”)</p>
+<p>Follow <a href="https://github.com/matt-gunther/ined-pma-2022">these steps</a> to obtain today’s code &amp; publicly available data.</p>
+<p>Open <code>analysis.rmd</code> and begin following along with these code chunks</p>
 <div class="columns">
 <div class="column" style="width:48%;">
 <div class="cell">
@@ -474,11 +474,11 @@ Do rainfall conditions influence women’s short-term family planning decisions?
 </ul></li>
 <li class="fragment">Variables
 <ul>
-<li class="fragment">RESULTFQ</li>
-<li class="fragment">PANELBIRTH</li>
-<li class="fragment">PANELWEIGHT</li>
-<li class="fragment">EAID</li>
-<li class="fragment">URBAN</li>
+<li class="fragment"><a href="https://pma.ipums.org/pma-action/variables/RESULTFQ">RESULTFQ</a></li>
+<li class="fragment"><a href="https://pma.ipums.org/pma-action/variables/PANELBIRTH">PANELBIRTH</a></li>
+<li class="fragment"><a href="https://pma.ipums.org/pma-action/variables/PANELWEIGHT">PANELWEIGHT</a></li>
+<li class="fragment"><a href="https://pma.ipums.org/pma-action/variables/EAID">EAID</a></li>
+<li class="fragment"><a href="https://pma.ipums.org/pma-action/variables/URBAN">URBAN</a></li>
 </ul></li>
 </ul>
 </div>
@@ -616,7 +616,7 @@ Do rainfall conditions influence women’s short-term family planning decisions?
 <div style="opacity:0.5">
 <p>PMA uses spatially referenced sample clusters - called “enumeration areas” (EAs) - sampled by probability proportional to population size.</p>
 <p>At the beginning of the panel study, 35 households were randomly selected within each EA.</p>
-<p>IPUMS PMA does not disseminate the GPS coordinates for EAs, but you may <a href="">apply here</a> for access directly from PMA.</p>
+<p>IPUMS PMA does not disseminate the GPS coordinates for EAs, but you may <a href="https://www.pmadata.org/data/request-access-datasets">apply here</a> for access directly from PMA.</p>
 </div>
 <p>Today, we’ll be using <strong>falsified</strong> GPS coordinates as an example.</p>
 </div><div class="column" style="width:40%;">
@@ -631,7 +631,7 @@ Do rainfall conditions influence women’s short-term family planning decisions?
 <div style="opacity:0.5">
 <p>PMA uses spatially referenced sample clusters - called “enumeration areas” (EAs) - sampled by probability proportional to population size.</p>
 <p>At the beginning of the panel study, 35 households were randomly selected within each EA.</p>
-<p>IPUMS PMA does not disseminate the GPS coordinates for EAs, but you may <a href="">apply here</a> for access directly from PMA.</p>
+<p>IPUMS PMA does not disseminate the GPS coordinates for EAs, but you may <a href="https://www.pmadata.org/data/request-access-datasets">apply here</a> for access directly from PMA.</p>
 <p>Today, we’ll be using <strong>falsified</strong> GPS coordinates as an example.</p>
 </div>
 <p>The coordinates represent the <span style="color:red"><strong>centroid</strong></span> of an enumeration area, <em>not</em> the location of any sampled household.</p>
@@ -1046,7 +1046,7 @@ Projected CRS: WGS 84 / UTM zone 30N
 <p>Now, we combine <code>pma</code> together with <code>gps_buffer</code>.</p>
 </div>
 <div class="fragment fade-in-then-semi-out">
-<p>The <code>pma</code> variable <a href="">PANELBIRTH_2</a> indicates whether each woman gave birth within the year that passed between Phase 1 and Phase 2 of the panel study.</p>
+<p>The <code>pma</code> variable <a href="https://pma.ipums.org/pma-action/variables/PANELBIRTH">PANELBIRTH_2</a> indicates whether each woman gave birth within the year that passed between Phase 1 and Phase 2 of the panel study.</p>
 </div>
 <div class="fragment fade-in">
 <div class="cell">
@@ -1268,7 +1268,7 @@ Geodetic CRS:  WGS 84
 <h2>Load Raster Data into R</h2>
 <div class="columns">
 <div class="column" style="width:75%;">
-<p>The <a href="">terra</a> package reads Raster files.</p>
+<p>The <a href="https://rspatial.github.io/terra/index.html">terra</a> package reads Raster files.</p>
 <p>You <em>could</em> simply read the data from a single day, and map the result.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1"></a>june5_2020 <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="st">"data/chirps/20200605.tif"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -2999,11 +2999,14 @@ max values  : 1.6021578, 1.8960675, 3.2768042, 0.9467555, 2.5081893, 1.5739420, 
 <h2>Spatially Weighted Averages</h2>
 <div class="columns">
 <div class="column" style="width:60%&quot;;">
+<div class="fragment">
 <p>Remember our example EA? It overlaps 8 CHIRPS pixels.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb63"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1"></a>test_buffer <span class="ot">&lt;-</span> ea_summary_gps <span class="sc">%&gt;%</span> </span>
 <span id="cb63-2"><a href="#cb63-2"></a>  <span class="fu">filter</span>(ea <span class="sc">==</span> test_ea)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</div>
+<div class="fragment">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb64"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
 <span id="cb64-2"><a href="#cb64-2"></a>  <span class="fu">layer_spatial</span>(</span>
@@ -3017,10 +3020,13 @@ max values  : 1.6021578, 1.8960675, 3.2768042, 0.9467555, 2.5081893, 1.5739420, 
 <span id="cb64-10"><a href="#cb64-10"></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">2</span>)</span>
 <span id="cb64-11"><a href="#cb64-11"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</div>
 </div><div class="column" style="width:40%;">
+<div class="fragment">
 <div class="cell">
 <div class="cell-output-display">
 <p><img data-src="slides_files/figure-revealjs/unnamed-chunk-68-1.png" width="672"></p>
+</div>
 </div>
 </div>
 </div>
@@ -3251,8 +3257,11 @@ Geodetic CRS:  WGS 84
 </section>
 <section id="z-scores-in-hierarchical-models" class="slide level2">
 <h2>Z-scores in hierarchical models</h2>
+<div class="fragment">
 <p>The <code>lme4</code> package allows us to build a hierarchical model with EA random effects.</p>
 <p>For example, a simple model interacting rainfall with <code>urban</code>:</p>
+</div>
+<div class="fragment">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb80"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1"></a><span class="fu">glmer</span>(</span>
 <span id="cb80-2"><a href="#cb80-2"></a>  birth <span class="sc">~</span> z<span class="sc">*</span>urban <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> ea), </span>
@@ -3272,11 +3281,15 @@ Geodetic CRS:  WGS 84
 </div>
 </div>
 <p>No controls, but we do so see some evidence that a wetter rainy season might increase odds for a <code>birth</code> that year.</p>
+</div>
 </section>
 <section id="survey-weights" class="slide level2">
 <h2>Survey weights</h2>
+<div class="fragment">
 <p><code>lme4</code> does not provide a nice way to incorporate survey weights (inverse selection probability).</p>
 <p>Instead, you might consider the <code>survey</code> package for weights and in a logit model with cluster-robust SEs.</p>
+</div>
+<div class="fragment">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb82"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1"></a>pma_chirps <span class="sc">%&gt;%</span></span>
 <span id="cb82-2"><a href="#cb82-2"></a>  <span class="fu">as_survey_design</span>(<span class="at">weight =</span> wt, <span class="at">id =</span> ea) <span class="sc">%&gt;%</span></span>
@@ -3294,6 +3307,7 @@ Geodetic CRS:  WGS 84
 </div>
 </div>
 <p>Similar results: some evidence that a wetter rainy season might increase odds for a <code>birth</code> that year.</p>
+</div>
 </section>
 <section id="some-other-things-to-consider" class="slide level2">
 <h2>Some other things to consider</h2>
