@@ -666,7 +666,7 @@ pma %>% count(PANELBIRTH_2 == 1)
 ## Birth outcomes by EA {auto-animate=true}
 
 ::: {.fragment .fade-in}
-Where are the enumeration areas where more women gave birth than average? 
+Births above and below the median enumeration area:
 :::
 ::: {.fragment .fade-in}
 ```{r}
@@ -686,7 +686,7 @@ ea_summary
 
 ## Birth outcomes by EA {auto-animate="true" visibility="uncounted"}
 
-Where are the enumeration areas where more women gave birth than average?
+Births above and below the median enumeration area:
 
 ```{r, `code-line-numbers` = "6-8"}
 ea_summary <- pma %>% 
@@ -705,7 +705,7 @@ ea_summary
 
 ## Birth outcomes by EA {auto-animate="true" visibility="uncounted"}
 
-Where are the enumeration areas where more women gave birth than average?
+Births above and below the median enumeration area:
 
 ```{r,  `code-line-numbers` = "8"}
 ea_summary <- pma %>% 
