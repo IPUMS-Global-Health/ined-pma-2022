@@ -216,11 +216,11 @@ At the beginning of the panel study, 35 households were randomly selected within
 
 ::: {.columns}
 :::: {.column width="60%"}
-<div style="opacity:0.5">
+::::: {style="opacity:0.5"}
 PMA uses spatially referenced sample clusters - called "enumeration areas" (EAs) - sampled by probability proportional to population size.
 
 At the beginning of the panel study, 35 households were randomly selected within each EA.
-</div>
+:::::
 ::::: {.fragment .fade-in-then-semi-out}
 IPUMS PMA does not disseminate the GPS coordinates for EAs, but you may [apply here](https://www.pmadata.org/data/request-access-datasets) for access directly from PMA.
 :::::
@@ -237,14 +237,13 @@ Today, we'll be using **falsified** GPS coordinates as an example.
 
 ::: {.columns}
 :::: {.column width="60%"}
-<div style="opacity:0.5">
+::::: {style="opacity:0.5"}
 PMA uses spatially referenced sample clusters - called "enumeration areas" (EAs) - sampled by probability proportional to population size.
 
 At the beginning of the panel study, 35 households were randomly selected within each EA.
 
 IPUMS PMA does not disseminate the GPS coordinates for EAs, but you may [apply here](https://www.pmadata.org/data/request-access-datasets) for access directly from PMA.
-</div>
-
+::::: 
 Today, we'll be using **falsified** GPS coordinates as an example. 
 ::::
 
@@ -257,7 +256,7 @@ Today, we'll be using **falsified** GPS coordinates as an example.
 
 ::: {.columns}
 :::: {.column width="60%"}
-<div style="opacity:0.5">
+::::: {style="opacity:0.5"}
 PMA uses spatially referenced sample clusters - called "enumeration areas" (EAs) - sampled by probability proportional to population size.
 
 At the beginning of the panel study, 35 households were randomly selected within each EA.
@@ -265,7 +264,7 @@ At the beginning of the panel study, 35 households were randomly selected within
 IPUMS PMA does not disseminate the GPS coordinates for EAs, but you may [apply here](https://www.pmadata.org/data/request-access-datasets) for access directly from PMA.
 
 Today, we'll be using **falsified** GPS coordinates as an example. 
-</div>
+:::::
 
 The coordinates represent the <span style="color:red">**centroid**</span> of an enumeration area, *not* the location of any sampled household. 
 ::::
