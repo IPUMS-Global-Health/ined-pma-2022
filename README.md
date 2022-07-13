@@ -15,13 +15,26 @@ Setup:
       - **Windows:** [Install RTools](https://cran.r-project.org/bin/windows/Rtools/). All three spatial analysis tools will be included.
       - **MacOS** Follow [these instructions](https://r-spatial.github.io/sf/index.html#macos) to install [GDAL](http://www.gdal.org/) using [Homebrew](https://brew.sh/), and then continue the instructions for installing `sf` and `rgdal` in R ([GEOS](https://libgeos.org/) and [PRØJ](http://proj.org/) will be installed automatically).
       - **Linux** Follow the appropriate instructions for your Linux distribution [shown here](https://r-spatial.github.io/sf/index.html#linux).
-  3. [Register to use IPUMS PMA data](https://pma.ipums.org/pma/register.shtml).
-      - :bar_chart:	you will need to be registered in order to **download data** during the workshop.
   4. Clone this repository, or simply [click here to download](https://github.com/matt-gunther/ined-pma-2022/archive/refs/heads/main.zip).
       - :open_file_folder: **Windows** users may need to download decompression software (e.g. [7-Zip](https://www.7-zip.org/)).
-  5. Once downloaded, open the file `ined-pma-2022.Rproj`.
+  5. Create a data extract from [IPUMS PMA](https://pma.ipums.org/pma-action/variables/group?unit_of_analysis=person) with the following elements (visit the [IPUMS PMA Youtube Channel](https://www.youtube.com/playlist?list=PLHMF4C5RDaejhm4Hdm3fulvaoKkhTrOHa) for detailed instructions on each step):
+      - [Register for a free IPUMS PMA account](https://pma.ipums.org/pma/register.shtml) - give a brief description of your research interests and be sure to select **Burkina Faso** when prompted
+      - [Click here](https://pma.ipums.org/pma-action/samples) to begin a new data extract by selecting samples: 
+         - Select the buttons for **Longitudinal** and **Wide** format
+         - Check the box for **Burkina Faso**
+         - Select the button for Sample Members: **Female Respondents**
+      - Next, add the following variables to your Data Cart: 
+         - [RESULTFQ](https://pma.ipums.org/pma-action/variables/RESULTFQ) 
+         - [PANELBIRTH](https://pma.ipums.org/pma-action/variables/PANELBIRTH)
+         - [PANELWEIGHT](https://pma.ipums.org/pma-action/variables/PANELWEIGHT)
+         - [EAID](https://pma.ipums.org/pma-action/variables/EAID)
+         - [URBAN](https://pma.ipums.org/pma-action/variables/URBAN)
+      - Follow [these instructions](https://tech.popdata.org/pma-data-hub/posts/2020-12-10-get-ipums-pma-data/index.html#fixed-width-data-format-dat) to download **both** files necessary to import the data extract into R 
+         - You must download **both** the `.dat.gz` and `.xml` files 
+         - Save both files into this project's `data` subfolder
+  6. Open the file `ined-pma-2022.Rproj` included in this project folder
       - :rocket: this will open RStudio in a new project environment.
-  6. Copy the following code into the `Console` in RStudio, then press `Enter`.
+  7. Copy the following code into the `Console` in RStudio, then press `Enter`.
       - :hourglass: it may take several minutes to install the packages needed for this workshop!
       - Update any packages if prompted.
       - Reply "No" to `Do you want to install from sources the package which needs compilation?`.
