@@ -2,7 +2,7 @@
 ### Linking health survey data with different climate datasets in R 
 ### July 6, 2022 14:00 - 16:00 (GMT+2)
 
-Welcome! If you're looking for free registration for the in-person coding workshop, please [click here](https://www.ined.fr/en/news/scientific-meetings/seminaries-colloque-ined/population-environment-health-connecting-pixels/).
+Welcome! This repository contains presentation slides, data, and analysis code from the coding workshop hosted on July 6, 2022. Setup instructions are shown below. If you have any questions, please contact [Matt Gunther](https://github.com/matt-gunther) directly.
 
 All data and software (R) featured in this workshop are available free of charge.
 
