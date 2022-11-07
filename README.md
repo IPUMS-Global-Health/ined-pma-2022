@@ -61,6 +61,6 @@ if(packageVersion("ggspatial") != '1.1.5.9000'){
 
 # Slides and Source Code
 
-[Click here for slides](https://matt-gunther.github.io/ined-pma-2022/slides.html) shown in the workshop (built with [Quarto and Revealjs](https://quarto.org/docs/presentations/revealjs/))
+[Click here for slides](https://ipums-global-health.github.io/ined-pma-2022/slides.html) shown in the workshop (built with [Quarto and Revealjs](https://quarto.org/docs/presentations/revealjs/))
 
 Source code is included in the file `analysis.Rmd`
